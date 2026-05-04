@@ -19,6 +19,10 @@ export const DEFAULT_CONFIG: ExtensionConfig = {
     aiAssistEnabled: false,
     aiConfidenceThreshold: 0.5,
     aiAutoApply: true,
+    aiProviderType: 'local',
+    aiModelName: 'Xenova/all-MiniLM-L6-v2',
+    aiApiUrl: '',
+    aiApiKey: '',
     preventDuplicateOrders: true,
 };
 

@@ -310,10 +310,62 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
                 .catch(err => sendResponse({ error: err.message, results: [] }));
             return true; // async
 
+        case 'AI_RANK_CANDIDATES':
+            handleRankCandidates(message.payload)
+                .then(results => sendResponse({ results }))
+                .catch(err => sendResponse({ error: err.message, results: [] }));
+            return true;
+
         default:
             return false;
     }
 });
+
+function buildEnrichedQuery(query: string, context?: any): string {
+    if (!context) return query;
+    
+    const parts = [query];
+    if (context.existingDiagnoses?.length > 0) {
+        parts.push(`Diagnosis: ${context.existingDiagnoses.join(', ')}`);
+    }
+    if (context.complaints?.length > 0) {
+        parts.push(`Complaints: ${context.complaints.join(', ')}`);
+    }
+    if (context.demographics?.gender) {
+        parts.push(`Patient: ${context.demographics.gender}, ${context.demographics.age}`);
+    }
+    return parts.join(' | ');
+}
+
+async function handleRankCandidates(payload: { query: string, candidates: string[], context?: any, topN?: number }) {
+    if (status !== 'ready') {
+        if (!initPromise) initPromise = initialize();
+        await initPromise;
+    }
+    if (!embedder) return [];
+
+    const enrichedQuery = buildEnrichedQuery(payload.query, payload.context);
+    console.log(`[AI] Ranking ${payload.candidates.length} candidates for: "${enrichedQuery}"`);
+
+    // Embed the enriched query
+    const queryOutput = await embedder(enrichedQuery, { pooling: 'mean', normalize: true });
+    const queryEmb = Array.from(queryOutput.data as Float32Array);
+
+    // Embed all candidates
+    const scoredCandidates = [];
+    for (let i = 0; i < payload.candidates.length; i++) {
+        const candidateLabel = payload.candidates[i];
+        const candOutput = await embedder(candidateLabel, { pooling: 'mean', normalize: true });
+        const candEmb = Array.from(candOutput.data as Float32Array);
+        
+        const score = cosineSimilarity(queryEmb, candEmb);
+        scoredCandidates.push({ index: i, label: candidateLabel, score });
+    }
+
+    // Sort by score
+    scoredCandidates.sort((a, b) => b.score - a.score);
+    return scoredCandidates.slice(0, payload.topN || 5);
+}
 
 async function handleQuery(
     text: string,

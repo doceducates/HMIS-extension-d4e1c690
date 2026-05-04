@@ -387,3 +387,37 @@ function isKnownSectionHeader(lower: string): boolean {
     ];
     return sections.some(s => lower === s || lower === s + ':');
 }
+
+/**
+ * Get the full raw text of the summary page, useful as general context for the AI.
+ */
+export function getRawSummaryText(): string {
+    const panels = Array.from(document.querySelectorAll('.panel-body, .card-body'));
+    if (panels.length === 0) return document.body.innerText;
+    
+    return panels.map(p => (p as HTMLElement).innerText).join('\n');
+}
+
+/**
+ * Try to extract presenting complaints from the summary page.
+ */
+export function extractComplaints(): string[] {
+    const complaints: string[] = [];
+    
+    // Simplistic extraction: find header, grab text below it
+    const cards = document.querySelectorAll('.card, .panel');
+    for (const card of Array.from(cards)) {
+        const header = card.querySelector('.card-header, .panel-heading');
+        if (header && header.textContent?.toLowerCase().includes('complaint')) {
+            const body = card.querySelector('.card-body, .panel-body');
+            if (body) {
+                const text = body.textContent?.trim();
+                if (text && !text.includes('No record found')) {
+                    complaints.push(text);
+                }
+            }
+        }
+    }
+    
+    return complaints;
+}

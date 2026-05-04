@@ -15,6 +15,7 @@ import { HMIS_SELECTORS } from './selectors';
 import { setLivewireInput, waitForLivewire, clickLivewireElement } from './livewire-utils';
 import { reportStatus } from './state';
 import { findBestMatch } from './match-engine';
+import { rankCandidates } from './ai-engine';
 import { delay, checkAbort, retryWithBackoff, TIMING } from './utils';
 import { StepResult } from './types';
 
@@ -77,8 +78,44 @@ async function _addDiagnosisAttempt(type: string, query: string, config: Extensi
     // Wait for results to load
     await waitForLivewire(TIMING.SEARCH_RESULTS);
 
-    // Find best match from results
-    const match = findBestMatch(HMIS_SELECTORS.DIAGNOSIS.LIST_ITEM, query);
+    // Get all candidates
+    const fallbackSelector = '.dropdown-menu.show li a, .dropdown-menu li a, .autocomplete-result, .search-result-item, ul.list-group li a';
+    const listSelector = HMIS_SELECTORS.DIAGNOSIS.LIST_ITEM;
+    let candidateNodes = document.querySelectorAll(listSelector);
+    if (candidateNodes.length === 0) {
+        candidateNodes = document.querySelectorAll(fallbackSelector);
+    }
+    
+    let match: HTMLElement | null = null;
+    
+    if (candidateNodes.length > 0) {
+        if (config.aiAssistEnabled) {
+            reportStatus(`AI ranking ${candidateNodes.length} diagnosis candidates...`, 'progress');
+            
+            // Get context from session
+            let context: any;
+            try {
+                const session = await chrome.storage.session.get('currentPatientContext');
+                context = session.currentPatientContext;
+            } catch (e) { /* ignore */ }
+            
+            const candidates = Array.from(candidateNodes).map(n => n.textContent?.trim() || '');
+            const ranked = await rankCandidates(query, candidates, context);
+            
+            if (ranked.length > 0 && ranked[0].score >= config.aiConfidenceThreshold) {
+                match = candidateNodes[ranked[0].index] as HTMLElement;
+                reportStatus(`AI matched "${ranked[0].label}" (score: ${ranked[0].score.toFixed(2)})`, 'info');
+            } else {
+                if (ranked.length > 0) {
+                    reportStatus(`AI confidence too low (${ranked[0].score.toFixed(2)} < ${config.aiConfidenceThreshold}), falling back to text match`, 'warning');
+                }
+                match = findBestMatch(listSelector, query);
+            }
+        } else {
+            match = findBestMatch(listSelector, query);
+        }
+    }
+
     if (match) {
         reportStatus(`Selecting: "${match.textContent?.trim()}"`, 'progress');
         match.click();

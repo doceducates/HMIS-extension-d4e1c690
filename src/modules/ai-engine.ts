@@ -11,17 +11,38 @@
  *   // → [{ code: "J94.0", label: "Pleural thickening", score: 0.82 }, ...]
  */
 
+import { AIProvider, AISuggestion, AIStatus, PatientContext, CandidateRank } from './ai-provider';
+import { LocalAIProvider } from './ai-provider-local';
+import { APIAIProvider } from './ai-provider-api';
+import { getCurrentConfig } from './config';
+
 // ════════════════════════════════════════════════════════════════
 //  TYPES
 // ════════════════════════════════════════════════════════════════
 
-export interface AISuggestion {
-    code: string;
-    label: string;
-    score: number;
+export type { AISuggestion, AIStatus };
+
+// ════════════════════════════════════════════════════════════════
+//  PROVIDER MANAGEMENT
+// ════════════════════════════════════════════════════════════════
+
+let activeProvider: AIProvider | null = null;
+
+async function ensureProvider(): Promise<AIProvider> {
+    if (activeProvider) return activeProvider;
+
+    const config = await getCurrentConfig();
+    if (config.aiProviderType === 'api') {
+        activeProvider = new APIAIProvider(config);
+    } else {
+        activeProvider = new LocalAIProvider();
+    }
+    return activeProvider;
 }
 
-export type AIStatus = 'loading' | 'ready' | 'error' | 'disabled' | 'uninstalled' | 'downloading';
+export function setProvider(provider: AIProvider) {
+    activeProvider = provider;
+}
 
 // ════════════════════════════════════════════════════════════════
 //  PUBLIC API
@@ -33,10 +54,9 @@ export type AIStatus = 'loading' | 'ready' | 'error' | 'disabled' | 'uninstalled
  */
 export async function initAI(): Promise<AIStatus> {
     try {
-        const response = await sendToBackground({
-            type: 'AI_INIT',
-        });
-        return response?.status || 'error';
+        const provider = await ensureProvider();
+        await provider.init();
+        return await provider.getStatus();
     } catch (err) {
         console.error('[AI Engine] Init failed:', err);
         return 'error';
@@ -48,35 +68,35 @@ export async function initAI(): Promise<AIStatus> {
  */
 export async function getAIStatus(): Promise<AIStatus> {
     try {
-        const response = await sendToBackground({
-            type: 'AI_STATUS',
-        });
-        const status = response?.status || 'disabled';
-
-        // If background says disabled or loading, but we haven't downloaded the model yet,
-        // show as uninstalled so the UI can prompt for download.
-        if (status === 'disabled' || status === 'loading' || status === 'error') {
-            const storage = await chrome.storage.local.get('aiModelDownloaded');
-            if (!storage.aiModelDownloaded) {
-                return 'uninstalled';
-            }
-        }
-
-        return status;
+        const provider = await ensureProvider();
+        return await provider.getStatus();
     } catch {
-        // Fallback to storage check if background is not responsive
-        const storage = await chrome.storage.local.get('aiModelDownloaded');
-        return storage.aiModelDownloaded ? 'disabled' : 'uninstalled';
+        return 'error';
+    }
+}
+
+/**
+ * Rank a list of candidate strings against a query with patient context.
+ */
+export async function rankCandidates(
+    query: string,
+    candidates: string[],
+    context?: PatientContext,
+    topN: number = 5
+): Promise<CandidateRank[]> {
+    if (!query || candidates.length === 0) return [];
+    
+    try {
+        const provider = await ensureProvider();
+        return await provider.rankCandidates(query, candidates, context, topN);
+    } catch (err) {
+        console.error('[AI Engine] Candidate ranking failed:', err);
+        return [];
     }
 }
 
 /**
  * Suggest ICD-10 diagnosis codes for the given patient text.
- *
- * @param text     Patient summary text (complaints, symptoms, etc.)
- * @param topN     Number of suggestions to return (default: 5)
- * @param minScore Minimum cosine similarity score (default: 0.3)
- * @returns        Ranked list of diagnosis suggestions
  */
 export async function suggestDiagnoses(
     text: string,
@@ -86,11 +106,8 @@ export async function suggestDiagnoses(
     if (!text || text.trim().length < 3) return [];
 
     try {
-        const response = await sendToBackground({
-            type: 'AI_QUERY_DIAGNOSIS',
-            payload: { text: text.trim(), topN, minScore },
-        });
-        return response?.results || [];
+        const provider = await ensureProvider();
+        return await provider.suggestDiagnoses(text, topN, minScore);
     } catch (err) {
         console.error('[AI Engine] Diagnosis query failed:', err);
         return [];
@@ -99,11 +116,6 @@ export async function suggestDiagnoses(
 
 /**
  * Suggest CPT investigation/procedure codes for the given text.
- *
- * @param text     Diagnosis text or clinical description
- * @param topN     Number of suggestions to return (default: 5)
- * @param minScore Minimum cosine similarity score (default: 0.3)
- * @returns        Ranked list of investigation suggestions
  */
 export async function suggestInvestigations(
     text: string,
@@ -113,33 +125,10 @@ export async function suggestInvestigations(
     if (!text || text.trim().length < 3) return [];
 
     try {
-        const response = await sendToBackground({
-            type: 'AI_QUERY_INVESTIGATION',
-            payload: { text: text.trim(), topN, minScore },
-        });
-        return response?.results || [];
+        const provider = await ensureProvider();
+        return await provider.suggestInvestigations(text, topN, minScore);
     } catch (err) {
         console.error('[AI Engine] Investigation query failed:', err);
         return [];
     }
-}
-
-// ════════════════════════════════════════════════════════════════
-//  INTERNAL MESSAGING
-// ════════════════════════════════════════════════════════════════
-
-/**
- * Send a message to the background service worker, which relays
- * it to the AI offscreen document.
- */
-function sendToBackground(message: Record<string, unknown>): Promise<any> {
-    return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage(message, (response) => {
-            if (chrome.runtime.lastError) {
-                reject(new Error(chrome.runtime.lastError.message));
-            } else {
-                resolve(response);
-            }
-        });
-    });
 }

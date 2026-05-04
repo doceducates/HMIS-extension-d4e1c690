@@ -20,13 +20,14 @@ import { ExtensionConfig } from './types';
 import { HMIS_SELECTORS } from './selectors';
 import { waitForLivewire } from './livewire-utils';
 import { WorkflowState, reportStatus, broadcastState } from './state';
-import { extractDataFromSummary } from './summary-extractor';
+import { extractDataFromSummary, getRawSummaryText, extractComplaints } from './summary-extractor';
 import { resolveWorkflow } from './clinical-rules';
 import { addDiagnosis } from './diagnosis-handler';
 import { addInvestigation } from './investigation-handler';
 import { performCheckout, releasePatientToken } from './checkout-handler';
 import { savePatientRecord } from './patient-records';
 import { PatientRecord } from './types';
+import { PatientContext } from './ai-provider';
 import { delay, checkAbort, showToast, TIMING, findByText } from './utils';
 
 // ════════════════════════════════════════════════════════════════
@@ -122,6 +123,18 @@ export async function activateAutoPilot(config: ExtensionConfig) {
         record.mrn = patientInfo.mrn;
         checkpoint.patientInfo = patientInfo.name;
         record.completedSteps.push('summary');
+
+        // Build AI context from everything we know
+        const patientContext: PatientContext = {
+            demographics: { name: patientInfo.name, age: patientInfo.age, gender: patientInfo.gender },
+            complaints: extractComplaints(),
+            existingDiagnoses: extracted.diagnoses,
+            existingInvestigations: extracted.investigations,
+            rawSummaryText: getRawSummaryText(),
+        };
+
+        // Store for handlers to pick up
+        await chrome.storage.session.set({ currentPatientContext: patientContext });
 
         checkpoint.completedSteps.push('summary');
         checkpoint.pendingSteps = checkpoint.pendingSteps.filter(s => s !== 'summary');
@@ -327,7 +340,7 @@ async function navigateToTab(textLabel: string, name: string) {
  *
  * There are NO dedicated CSS classes for individual fields — it's all in one text block.
  */
-function extractPatientInfo(): { name: string; mrn: string } {
+function extractPatientInfo(): { name: string; mrn: string; age: string; gender: string } {
     // Try multiple containers that might hold the patient info bar
     const containers = document.querySelectorAll(
         '.x_content, [class*="patient"], .right_col > div:first-child, .patient-info-bar'
@@ -349,10 +362,14 @@ function extractPatientInfo(): { name: string; mrn: string } {
 
     const nameMatch = fullText.match(/Name:\s*([^|]+)/);
     const mrnMatch = fullText.match(/MRN:\s*(\d+)/);
+    const ageMatch = fullText.match(/Age:\s*([^|]+)/);
+    const genderMatch = fullText.match(/Gender:\s*([^|]+)/);
 
     return {
         name: nameMatch ? nameMatch[1].trim() : 'Unknown Patient',
         mrn: mrnMatch ? mrnMatch[1].trim() : 'Unknown MRN',
+        age: ageMatch ? ageMatch[1].trim() : '',
+        gender: genderMatch ? genderMatch[1].trim() : '',
     };
 }
 

@@ -22,6 +22,10 @@ export interface ExtensionConfig {
     aiAssistEnabled: boolean;         // Master toggle for Tier 2 AI
     aiConfidenceThreshold: number;    // 0-1, default 0.5 — minimum cosine similarity to accept
     aiAutoApply: boolean;             // true = auto-select best match, false = log suggestions only
+    aiProviderType: 'local' | 'api';
+    aiModelName: string;
+    aiApiUrl: string;
+    aiApiKey: string;
     // Advanced Workflow
     preventDuplicateOrders: boolean;
 }

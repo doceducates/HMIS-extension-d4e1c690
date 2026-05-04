@@ -160,6 +160,9 @@ const INVESTIGATION_TO_DIAGNOSIS: Array<{
     { keywords: ['x-ray chest', 'xray chest', 'cxr'], diagnosis: 'Chest symptoms', ruleName: 'Chest X-Ray' },
     { keywords: ['x-ray', 'xray'], diagnosis: 'Musculoskeletal pathology', ruleName: 'General X-Ray' },
     { keywords: ['ct brain', 'ct head'], diagnosis: 'Neurological symptoms', ruleName: 'CT Brain' },
+    { keywords: ['ct chest', 'hrct'], diagnosis: 'Chest symptoms', ruleName: 'CT Chest' },
+    { keywords: ['ct abdomen', 'ct pelvis', 'ct chest abdomen & pelvis', 'ct scan abdomen'], diagnosis: 'Abdominal pathology', ruleName: 'CT Abdomen/Pelvis' },
+    { keywords: ['ct scan films', 'ct scan', 'ct'], diagnosis: 'For CT evaluation', ruleName: 'CT Scan General' },
     { keywords: ['mri'], diagnosis: 'For MRI evaluation', ruleName: 'MRI study' },
     { keywords: ['doppler'], diagnosis: 'Vascular pathology', ruleName: 'Doppler study' },
 

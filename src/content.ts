@@ -183,13 +183,15 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
             if (mode === 'auto') {
                 chrome.storage.session.set({ 
                     loginAttempts: 0, 
-                    setupCompleted: true
+                    setupCompleted: true,
+                    isLiveQueuePatient: true
                 });
             } else {
                 chrome.storage.session.set({ 
                     loginAttempts: 0, 
                     setupCompleted: true,
-                    targetedMode: mode
+                    targetedMode: mode,
+                    isLiveQueuePatient: true
                 });
             }
             btn.click();

@@ -24,7 +24,7 @@ import { extractDataFromSummary } from './summary-extractor';
 import { resolveWorkflow } from './clinical-rules';
 import { addDiagnosis } from './diagnosis-handler';
 import { addInvestigation } from './investigation-handler';
-import { performCheckout } from './checkout-handler';
+import { performCheckout, releasePatientToken } from './checkout-handler';
 import { savePatientRecord } from './patient-records';
 import { PatientRecord } from './types';
 import { delay, checkAbort, showToast, TIMING, findByText } from './utils';
@@ -104,6 +104,7 @@ export async function activateAutoPilot(config: ExtensionConfig) {
     };
 
     const startTime = Date.now();
+    let isLiveQueue = false;
 
     try {
         // ── Step 1: Navigate to Summary and Extract Data ──
@@ -132,10 +133,11 @@ export async function activateAutoPilot(config: ExtensionConfig) {
         // TIER 2: This now optionally calls the AI embedding model.
         let mode: 'assess' | 'procedure' | undefined;
         try {
-            const session = await chrome.storage.session.get('targetedMode');
+            const session = await chrome.storage.session.get(['targetedMode', 'isLiveQueuePatient']);
             mode = session.targetedMode as 'assess' | 'procedure' | undefined;
+            isLiveQueue = session.isLiveQueuePatient === true;
             // Clear it so it doesn't leak to next patient if using auto-loop
-            await chrome.storage.session.remove('targetedMode');
+            await chrome.storage.session.remove(['targetedMode', 'isLiveQueuePatient']);
         } catch { /* Silent */ }
 
         const resolved = await resolveWorkflow(extracted, config, mode);
@@ -234,7 +236,11 @@ export async function activateAutoPilot(config: ExtensionConfig) {
                 checkpoint.pendingSteps = [];
                 await saveCheckpoint(checkpoint);
             } catch (e: any) {
-                record.errors.push({ step: 'checkout', message: e.message, timestamp: new Date().toISOString() });
+                const msg = e.message || 'Checkout failed';
+                record.errors.push({ step: 'checkout', message: msg, timestamp: new Date().toISOString() });
+                reportStatus(`Checkout failed: ${msg}`, 'error');
+                // Release token so patient doesn't stay locked
+                await releasePatientToken();
             }
         } else {
             reportStatus('All forms filled ✓ — checkout manually or turn on Auto Checkout', 'success');
@@ -262,7 +268,12 @@ export async function activateAutoPilot(config: ExtensionConfig) {
     } finally {
         // ═══ GUARANTEED TOKEN RELEASE ═══
         if (!record.completedSteps.includes('checkout')) {
-            await safeReleaseToken(record);
+            if (isLiveQueue) {
+                reportStatus('Kept patient open for manual review/checkout.', 'info');
+                record.tokenReleased = false;
+            } else {
+                await safeReleaseToken(record);
+            }
         }
 
         record.durationMs = Date.now() - startTime;

@@ -2,20 +2,17 @@
  * Summary Extractor — Extracts diagnosis and investigation data from the
  * HMIS patient encounter Summary tab.
  *
- * The Summary page uses a 2-column col-md-6 grid with styled headings.
- * This module tries multiple extraction strategies for resilience.
- *
- * Verified against live HMIS DOM on 2026-04-25:
- *   - Sections: Vitals, Presenting Complaints, Diagnosis, Allergies,
- *     Immunization, Medication, Pathology, Radiology
- *   - Diagnosis items: "✓ Provisional" on line 1, diagnosis name on line 2
- *   - Radiology/Pathology items have LONG numeric CPT codes appended
- *     DIRECTLY to the text with NO space separator:
- *       "USG FNAC (Fine Needle Aspiration Cytology)00100000000010005"
- *       "Anti HIV by Elisa001000000000T86720"
+ * HMIS DOM Structure (verified 2026-05-04 live inspection):
+ *   - Sections are `.col-md-6` divs
+ *   - Section title is the FIRST TEXT NODE of the div (plain text, no tag)
+ *   - Items are newline-separated text inside the div (NOT in <p> or <li>)
+ *   - Diagnosis items: "Provisional\n<name>" or "Final\n<name>"
+ *   - Investigation items have long numeric CPT codes appended directly:
+ *       "USG Swelling001000000000076999"
+ *       "Histopathology Biopsy001000000000T88307"
+ *   - Section names: "Diagnosis", "Radiology", "Pathology", "Investigation"
  */
 
-import { HMIS_SELECTORS } from './selectors';
 import { reportStatus } from './state';
 
 export interface ExtractedSummaryData {
@@ -24,10 +21,14 @@ export interface ExtractedSummaryData {
 }
 
 /**
- * Extracts Diagnosis and Radiology data from the summary page cards.
- * Tries card-based extraction first, then falls back to a broad DOM scan.
+ * Extracts Diagnosis and Radiology/Pathology/Investigation data from the summary page.
  *
- * Returns whatever was found — may be empty for both fields.
+ * Uses a 3-strategy approach:
+ *   1. col-md-6 innerText parsing (primary — matches HMIS live DOM)
+ *   2. Header element scan (fallback for older HMIS versions)
+ *   3. Full page text scan (last resort)
+ *
+ * Returns whatever was found — may be empty.
  * The clinical-rules engine handles the "what to do when empty" logic.
  */
 export async function extractDataFromSummary(): Promise<ExtractedSummaryData> {
@@ -36,136 +37,263 @@ export async function extractDataFromSummary(): Promise<ExtractedSummaryData> {
         investigations: []
     };
 
-    // Strategy 1: Card/column-based extraction (primary)
-    extractFromCards(data);
+    // Strategy 1: Read .col-md-6 containers by their first text node (primary)
+    const strategy1Found = extractFromColMd6(data);
 
-    // Strategy 2: If no cards matched, try broader DOM scan
+    // Strategy 2: Header element scan fallback
+    if (!strategy1Found) {
+        reportStatus('col-md-6 scan found nothing — trying header element scan', 'info');
+        extractFromHeaderElements(data);
+    }
+
+    // Strategy 3: If still nothing, try full-page text scan
     if (data.diagnoses.length === 0 && data.investigations.length === 0) {
-        reportStatus('Card extraction found nothing — trying broad DOM scan', 'info');
-        extractFromBroadScan(data);
+        reportStatus('Header scan found nothing — trying full page scan', 'info');
+        extractFromFullPageText(data);
     }
 
     // Deduplicate
     data.diagnoses = [...new Set(data.diagnoses)];
     data.investigations = [...new Set(data.investigations)];
 
-    // Log what we found for transparency
-    if (data.diagnoses.length === 0 && data.investigations.length === 0) {
-        reportStatus('Summary page appears empty — no diagnosis or investigation found', 'info');
-    } else {
-        if (data.diagnoses.length > 0) {
-            reportStatus(`Diagnoses found: ${data.diagnoses.join(', ')}`, 'info');
-        }
-        if (data.investigations.length > 0) {
-            reportStatus(`Investigations found: ${data.investigations.join(', ')}`, 'info');
-        }
+    reportStatus(
+        `Extracted: ${data.diagnoses.length} diagnosis(es), ${data.investigations.length} investigation(s)`,
+        'info'
+    );
+
+    if (data.diagnoses.length > 0) {
+        reportStatus(`Diagnoses: ${data.diagnoses.join(' | ')}`, 'info');
+    }
+    if (data.investigations.length > 0) {
+        reportStatus(`Investigations: ${data.investigations.join(' | ')}`, 'info');
     }
 
     return data;
 }
 
 // ════════════════════════════════════════════════════════════════
-//  EXTRACTION STRATEGIES
+//  STRATEGY 1: col-md-6 innerText parsing (matches live HMIS DOM)
 // ════════════════════════════════════════════════════════════════
 
 /**
- * Strategy 1: Find `.card` / `.col-md-6` / `.panel` / `.section` elements
- * and check their headings for "Diagnosis" or "Radiology".
+ * Reads each .col-md-6 div's innerText.
+ * The first non-empty line is treated as the section title.
+ * Subsequent lines are the items.
+ * Returns true if at least one section matched.
  */
-function extractFromCards(data: ExtractedSummaryData): void {
-    const cards = document.querySelectorAll(HMIS_SELECTORS.SUMMARY.CARDS);
+function extractFromColMd6(data: ExtractedSummaryData): boolean {
+    const cols = document.querySelectorAll('.col-md-6, .col-md-12');
+    let matched = false;
 
-    cards.forEach(card => {
-        const headerEl = card.querySelector(HMIS_SELECTORS.SUMMARY.CARD_HEADER)
-            || card.querySelector('h5')
-            || card.querySelector('.card-header');
-        const header = headerEl?.textContent?.trim() || '';
-        const items = card.querySelectorAll(HMIS_SELECTORS.SUMMARY.ITEM_TEXT);
+    cols.forEach(col => {
+        const el = col as HTMLElement;
+        const rawText = el.innerText || '';
+        const lines = rawText
+            .split('\n')
+            .map(l => l.trim())
+            .filter(l => l.length > 0);
 
-        const headerLower = header.toLowerCase();
+        if (lines.length === 0) return;
 
-        if (headerLower.includes('diagnosis')) {
-            extractDiagnosisItems(items, data);
-        } else if (
-            headerLower.includes('radiology') ||
-            headerLower.includes('investigation') ||
-            headerLower.includes('procedure') ||
-            headerLower.includes('order')
-        ) {
-            extractInvestigationItems(items, data);
+        // Find the section type by scanning ALL lines for a section header
+        // (not just lines[0]) because <strong> tags may render before innerText
+        let sectionType: 'diagnosis' | 'investigation' | null = null;
+        let headerLineIdx = -1;
+
+        for (let i = 0; i < Math.min(lines.length, 3); i++) {
+            const lower = lines[i].toLowerCase().trim();
+            if (lower === 'diagnosis' || lower === 'diagnoses') {
+                sectionType = 'diagnosis';
+                headerLineIdx = i;
+                break;
+            } else if (
+                lower === 'radiology' || lower === 'radiology:' ||
+                lower === 'pathology' || lower === 'pathology:' ||
+                lower === 'investigation' || lower === 'investigations' ||
+                lower === 'procedure' || lower === 'orders'
+            ) {
+                sectionType = 'investigation';
+                headerLineIdx = i;
+                break;
+            }
+        }
+
+        if (!sectionType) return;
+
+        const contentLines = lines.slice(headerLineIdx + 1);
+
+        if (sectionType === 'diagnosis') {
+            matched = true;
+            parseDiagnosisLines(contentLines, data);
+        } else {
+            matched = true;
+            parseInvestigationLines(contentLines, data);
         }
     });
+
+    return matched;
 }
 
+// ════════════════════════════════════════════════════════════════
+//  STRATEGY 2: Header element scan
+// ════════════════════════════════════════════════════════════════
+
 /**
- * Strategy 2: Broad DOM scan — look for any heading-like element that
- * mentions "Diagnosis" or "Radiology" and extract sibling content.
+ * Looks for h4/h5/h6/strong elements whose text mentions a section name,
+ * then extracts sibling/parent text.
  */
-function extractFromBroadScan(data: ExtractedSummaryData): void {
+function extractFromHeaderElements(data: ExtractedSummaryData): void {
     const allHeaders = document.querySelectorAll('h4, h5, h6, .card-header, .section-title, strong, b');
 
     allHeaders.forEach(h => {
         const hText = h.textContent?.trim().toLowerCase() || '';
-        // Walk up to the nearest container — try .card, .col-md-6, or direct parent
-        const parent = h.closest('.card') || h.closest('.col-md-6') || h.parentElement;
+        const parent = h.closest('.col-md-6') || h.closest('.card') || h.parentElement;
         if (!parent) return;
 
-        const contentItems = parent.querySelectorAll('p, li, span, .item-text, .summary-item, span.badge');
-
-        if (hText.includes('diagnosis')) {
-            contentItems.forEach(item => {
-                const t = cleanDiagnosisText(item.textContent || '');
-                if (isValidExtractedText(t) && !t.toLowerCase().includes('diagnosis')) {
-                    data.diagnoses.push(t);
-                }
-            });
+        if (hText === 'diagnosis' || hText === 'diagnoses') {
+            const el = parent as HTMLElement;
+            const lines = (el.innerText || '').split('\n').map(l => l.trim()).filter(l => l.length > 0).slice(1);
+            parseDiagnosisLines(lines, data);
         } else if (
-            hText.includes('radiology') ||
-            hText.includes('investigation') ||
-            hText.includes('procedure') ||
-            hText.includes('order')
+            hText === 'radiology' ||
+            hText === 'pathology' ||
+            hText === 'investigation' ||
+            hText === 'investigations' ||
+            hText === 'procedure' ||
+            hText === 'orders'
         ) {
-            contentItems.forEach(item => {
-                const t = cleanInvestigationText(item.textContent || '');
-                if (isValidExtractedText(t) && !isHeaderText(t)) {
-                    data.investigations.push(t);
-                }
-            });
+            const el = parent as HTMLElement;
+            const lines = (el.innerText || '').split('\n').map(l => l.trim()).filter(l => l.length > 0).slice(1);
+            parseInvestigationLines(lines, data);
         }
     });
 }
 
 // ════════════════════════════════════════════════════════════════
-//  ITEM EXTRACTION HELPERS
+//  STRATEGY 3: Full-page text scan
 // ════════════════════════════════════════════════════════════════
 
 /**
- * Extract individual diagnosis items from a card's content elements.
- * Handles: "Provisional - Disc Herniation", "Final - Lumbar Spondylosis", etc.
+ * Last resort: scan the entire right_col or body text for known section
+ * markers and extract lines after them.
  */
-function extractDiagnosisItems(items: NodeListOf<Element>, data: ExtractedSummaryData): void {
-    items.forEach(item => {
-        const text = item.textContent?.trim() || '';
-        const cleanText = cleanDiagnosisText(text);
-        if (isValidExtractedText(cleanText)) {
-            data.diagnoses.push(cleanText);
+function extractFromFullPageText(data: ExtractedSummaryData): void {
+    const container =
+        document.querySelector('.right_col') ||
+        document.querySelector('#content') ||
+        document.querySelector('main') ||
+        document.body;
+
+    const el = container as HTMLElement;
+    const allLines = (el.innerText || '')
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 0);
+
+    let mode: 'diagnosis' | 'investigation' | null = null;
+
+    for (const line of allLines) {
+        const lower = line.toLowerCase();
+
+        // Section title detection
+        if (lower === 'diagnosis' || lower === 'diagnoses') {
+            mode = 'diagnosis';
+            continue;
         }
-    });
+        if (
+            lower === 'radiology' ||
+            lower === 'pathology' ||
+            lower === 'investigation' ||
+            lower === 'investigations'
+        ) {
+            mode = 'investigation';
+            continue;
+        }
+        // Reset mode on other section headers
+        if (isKnownSectionHeader(lower)) {
+            mode = null;
+            continue;
+        }
+
+        if (mode === 'diagnosis') {
+            const cleaned = cleanDiagnosisText(line);
+            if (isValidExtractedText(cleaned)) {
+                data.diagnoses.push(cleaned);
+            }
+        } else if (mode === 'investigation') {
+            const cleaned = cleanInvestigationText(line);
+            if (isValidExtractedText(cleaned)) {
+                data.investigations.push(cleaned);
+            }
+        }
+    }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  LINE PARSERS
+// ════════════════════════════════════════════════════════════════
+
+/**
+ * Parse diagnosis lines from a section.
+ *
+ * HMIS format (verified 2026-05-04):
+ *   Line 1: "Provisional"  ← type label
+ *   Line 2: "Localized swelling, mass and lump, unspecified"  ← actual diagnosis
+ *   Line 3: "Provisional"  ← next entry type label
+ *   Line 4: "Benign neoplasm of left breast"  ← actual diagnosis
+ *
+ * State-machine: a type-label line signals that the NEXT line is a diagnosis name.
+ * Lines that appear without a preceding type-label are also extracted (fallback).
+ */
+function parseDiagnosisLines(lines: string[], data: ExtractedSummaryData): void {
+    const typeLabels = new Set(['provisional', 'final', 'confirmed', 'suspected']);
+    const noiseLines = new Set(['no result found', 'view more', 'no results found']);
+
+    let expectDiagnosis = false;
+
+    for (const line of lines) {
+        const lower = line.toLowerCase().trim();
+
+        if (noiseLines.has(lower)) {
+            expectDiagnosis = false;
+            continue;
+        }
+
+        if (typeLabels.has(lower)) {
+            // This line is a type label — next line should be the diagnosis name
+            expectDiagnosis = true;
+            continue;
+        }
+
+        if (expectDiagnosis || !typeLabels.has(lower)) {
+            const cleaned = cleanDiagnosisText(line);
+            if (isValidExtractedText(cleaned) && !isHeaderText(cleaned)) {
+                data.diagnoses.push(cleaned);
+            }
+            expectDiagnosis = false;
+        }
+    }
 }
 
 /**
- * Extract investigation/procedure items from a card's content elements.
- * Handles both imaging studies (USG Abdomen) and interventional procedures
- * (USG guided FNAC, pleural tap, embolization, etc.)
+ * Parse investigation lines from a section (Radiology / Pathology).
+ * HMIS format: items may have CPT codes appended directly to text.
+ * Pipe-separated specimen info (| SERUM, | Histo Biopsy) is also stripped.
  */
-function extractInvestigationItems(items: NodeListOf<Element>, data: ExtractedSummaryData): void {
-    items.forEach(item => {
-        const text = item.textContent?.trim() || '';
-        const cleanText = cleanInvestigationText(text);
-        if (isValidExtractedText(cleanText)) {
-            data.investigations.push(cleanText);
+function parseInvestigationLines(lines: string[], data: ExtractedSummaryData): void {
+    const noise = new Set(['no result found', 'view more']);
+
+    for (const line of lines) {
+        const lower = line.toLowerCase();
+        if (noise.has(lower)) continue;
+        // Skip lines that are just pipe-separated specimen info (e.g. "| Histo Biopsy")
+        if (line.startsWith('|')) continue;
+
+        const cleaned = cleanInvestigationText(line);
+        if (isValidExtractedText(cleaned) && !isHeaderText(cleaned)) {
+            data.investigations.push(cleaned);
         }
-    });
+    }
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -175,85 +303,87 @@ function extractInvestigationItems(items: NodeListOf<Element>, data: ExtractedSu
 /**
  * Clean raw diagnosis text from the summary page.
  * Strips "Provisional - " or "Final - " prefixes and other noise.
- *
- * HMIS formats:
- *   "Provisional"           → skip (just a label)
- *   "Acute pain due to trauma" → keep
- *   "Provisional - Disc Herniation" → strip prefix → "Disc Herniation"
  */
 function cleanDiagnosisText(raw: string): string {
     return raw
         .trim()
         // Remove "Provisional - " / "Final - " prefix
-        .replace(/^(Provisional|Final)\s*[-–—:]?\s*/i, '')
+        .replace(/^(Provisional|Final|Confirmed|Suspected)\s*[-–—:]?\s*/i, '')
         // Remove trailing numbers/codes (with or without leading space)
         .replace(/\)?\d{6,18}\s*$/, '')
         // Remove "View More" button text that may leak in
         .replace(/View More/gi, '')
-        // Remove leading/trailing whitespace and dots
+        // Remove pipe-separated specimen text
+        .replace(/\|\s*.*/g, '')
+        // Remove leading/trailing whitespace and dots/checkmarks
         .replace(/^[.·✓✔\s]+|[.·\s]+$/g, '')
         .trim();
 }
 
 /**
  * Clean raw investigation/procedure text from the summary page.
- * Strips trailing CPT codes (long numeric suffixes) that HMIS appends.
+ * Strips trailing CPT codes (long numeric or alphanumeric suffixes) that HMIS appends.
  *
- * CRITICAL FIX (2026-04-25): HMIS appends digits DIRECTLY to text
- * with NO whitespace separator:
+ * HMIS appends digits DIRECTLY to text with NO whitespace separator:
  *   "USG FNAC (Fine Needle Aspiration Cytology)00100000000010005"
- *   "CT Scan Films Charges00100000000076491"
- *
- * The old regex \s*\d{10,18}\s*$ required a space before digits and FAILED.
- * New regex handles both with and without space/paren before digits.
+ *   "Histopathology Biopsy001000000000T88307"
  */
 function cleanInvestigationText(raw: string): string {
     return raw
         .trim()
-        // Strip trailing 10-18 digit CPT codes — handles NO space before digits
-        // Matches: "...Cytology)00100000000010005" or "...Charges00100000000076491"
-        .replace(/\)?\d{10,18}\s*$/, '')
+        // Strip pipe-separated specimen info first (| Histo Biopsy, | SERUM, | EDTA...)
+        .replace(/\|\s*.*/g, '')
+        // Strip trailing 10-18 digit CPT codes (handles NO space before digits or alphanumeric suffix)
+        .replace(/\)?[\dA-Z]{10,18}\s*$/, '')
         // Strip trailing 5-6 digit CPT codes with separator (e.g., "USG Abdomen - 76700")
         .replace(/\s*[-–]\s*\d{4,6}\s*$/, '')
         // Remove "View More" button text that may leak in
         .replace(/View More/gi, '')
-        // Remove specimen/section info that may leak (e.g., "| Special Serum")
-        .replace(/\|\s*Special Serum/gi, '')
-        .replace(/\|\s*SERUM/gi, '')
-        .replace(/\|\s*EDTA.*/gi, '')
         // Remove leading/trailing whitespace, dots, checkmarks
         .replace(/^[.·✓✔\s]+|[.·\s]+$/g, '')
         .trim();
 }
 
-/**
- * Check if extracted text is valid (not empty, not too short, not just noise).
- */
+// ════════════════════════════════════════════════════════════════
+//  VALIDATION HELPERS
+// ════════════════════════════════════════════════════════════════
+
 function isValidExtractedText(text: string): boolean {
     if (!text || text.length <= 2) return false;
 
-    // Filter out common noise strings
     const noise = [
         'n/a', 'none', 'nil', '--', '-', 'no', 'na',
-        'provisional', 'final',                     // bare type labels
-        'no result found', 'no results found',       // empty section markers
-        'view more',                                  // button text leaking in
+        'provisional', 'final', 'confirmed', 'suspected',
+        'no result found', 'no results found',
+        'view more',
     ];
     if (noise.includes(text.toLowerCase())) return false;
 
-    // Filter out strings that are just numbers (residual CPT codes)
+    // Filter out pure number strings (residual CPT codes)
     if (/^\d+$/.test(text)) return false;
 
     return true;
 }
 
-/**
- * Check if the text is just a section header (not actual content).
- */
 function isHeaderText(text: string): boolean {
-    const headers = ['radiology', 'investigation', 'procedure', 'order', 'diagnosis',
-                     'pathology', 'medication', 'vitals', 'allergies', 'immunization',
-                     'presenting complaints', 'patient summary'];
+    const headers = [
+        'radiology', 'investigation', 'investigations', 'procedure', 'order', 'orders',
+        'diagnosis', 'diagnoses', 'pathology',
+        'medication', 'vitals', 'allergies', 'immunization',
+        'presenting complaints', 'complaints', 'patient summary'
+    ];
     const lower = text.toLowerCase();
-    return headers.some(h => lower === h || lower === h + ':' || lower === h + 's' || lower === h + 's:');
+    return headers.some(h =>
+        lower === h || lower === h + ':' || lower === h + 's' || lower === h + 's:'
+    );
+}
+
+function isKnownSectionHeader(lower: string): boolean {
+    const sections = [
+        'vitals', 'presenting complaints', 'complaints',
+        'allergies', 'immunization', 'medication',
+        'pathology', 'radiology', 'investigation', 'investigations',
+        'diagnosis', 'diagnoses', 'patient summary'
+    ];
+    return sections.some(s => lower === s || lower === s + ':');
 }

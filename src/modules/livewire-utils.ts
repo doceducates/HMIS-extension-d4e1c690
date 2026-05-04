@@ -16,11 +16,23 @@ export function setLivewireInput(element: HTMLInputElement | HTMLSelectElement, 
 
 /**
  * Triggers a click on a Livewire-bound button, simulating user action.
+ * Iterates through matches and clicks the first VISIBLE one to avoid clicking
+ * buttons inside hidden tabs (e.g. multiple "Save" buttons on different tabs).
  */
 export function clickLivewireElement(selector: string): boolean {
-    const el = document.querySelector(selector) as HTMLElement;
-    if (el) {
-        el.click();
+    const elements = document.querySelectorAll(selector);
+    for (const el of Array.from(elements)) {
+        const htmlEl = el as HTMLElement;
+        // offsetParent is null when the element or its parent is display:none
+        if (htmlEl.offsetParent !== null) {
+            htmlEl.click();
+            return true;
+        }
+    }
+    
+    // Fallback if none are considered visible (e.g. fixed positioning edge case)
+    if (elements.length > 0) {
+        (elements[0] as HTMLElement).click();
         return true;
     }
     return false;

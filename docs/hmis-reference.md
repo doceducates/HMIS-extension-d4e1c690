@@ -1,7 +1,7 @@
 # HMIS Autopilot — Operational Reference
 
 > Single source of truth for HMIS page structure, selectors, automation strategy, and known issues.
-> Last verified: April 25, 2026 against live patient **SHAFIA M RIZWAN** (MRN: `19202644951180`).
+> Last verified: May 4, 2026 against live patient **TEHREEM AKHTAR** (`/doctor/add/94071777/112021`).
 
 ---
 
@@ -73,7 +73,7 @@ Detecting page context solely by DOM elements causes loops. Use **path-based det
 
 ---
 
-## 4. Patient Encounter — Summary Tab — ✅ Verified Live
+## 4. Patient Encounter — Summary Tab — ✅ Verified Live (2026-05-04)
 
 ### Page Layout
 - **Top bar**: Patient Information + "Release Patient Token" (blue btn) + "Check Out" (green btn)
@@ -88,29 +88,47 @@ Name: SHAFIA M RIZWAN | Contact: 0300-6566007 | Age: 46y, 2m, 19d | MRN: 1920264
 > [!CAUTION]
 > **Patient info selectors are broken.** `.patient-name` and `#mrn` do NOT exist. Info is a flat text bar with "Name:", "MRN:" labels. Must parse with regex instead.
 
-### Summary Card Sections
+### Summary Extraction — DOM Structure (Verified 2026-05-04 TEHREEM AKHTAR)
 
-| Section | Content Example | Notes |
-|---|---|---|
-| **Vitals** | "No Result Found" | |
-| **Presenting Complaints** | "No Result Found" | |
-| **Diagnosis** | `✓ Provisional` / `Acute pain due to trauma` | Two-line format: type on line 1, name on line 2 |
-| **Allergies** | "No Result Found" | |
-| **Immunization** | "No Result Found" | |
-| **Medication** | `Diclofenac Sodium - Tablet (Oral) - 50 mg (Internal)` | Includes route, dosage, frequency details |
-| **Pathology** | `Anti HIV by Elisa001000000000T86720` / `| Special Serum` | Long numeric CPT codes appended directly (no space) |
-| **Radiology** | `USG FNAC (Fine Needle Aspiration Cytology)00100000000010005` | Same — digits glued to text |
+Each section is a `.col-md-6` div. The section title is either the **first line of `innerText`** or is inside a `<strong>` tag. Items are **newline-separated plain text** — NOT wrapped in `<p>` or `<li>`.
+
+**Diagnosis section `innerText` example:**
+```
+Diagnosis
+Provisional
+Localized swelling, mass and lump, unspecified
+Provisional
+Benign neoplasm of left breast
+```
+
+**Radiology section `innerText` example:**
+```
+Radiology
+USG Guided Biopsy001000000000XXXXX
+USG Swelling001000000000XXXXX
+```
+
+**Pathology section `innerText` example:**
+```
+Pathology
+Anti HIV by Elisa001000000000T86720
+| Special Serum
+```
 
 > [!IMPORTANT]
-> **Numeric suffix cleaning is broken.** The regex `\s*\d{10,18}\s*$` expects whitespace before digits. Actual format: `USG FNAC (Fine Needle Aspiration Cytology)00100000000010005` — **NO space**. Must fix regex to: `\)?\d{10,18}\s*$`
+> **Extraction method:** Read `.col-md-6` elements with `el.innerText.split('\n')`. Line 0 (or first line matching a known section name) is the **header**. Subsequent lines are items. "Provisional"/"Final" labels appear on their OWN line before each diagnosis name — use a state-machine parser (see `summary-extractor.ts`).
+
+> [!IMPORTANT]
+> **CPT code cleaning:** HMIS appends long numeric/alphanumeric codes DIRECTLY to item text with NO space: `USG Guided Biopsy001000000000XXXXX`. Strip with regex `\)?[\dA-Z]{10,18}\s*$`.
 
 ### Summary Selectors
 
 | Selector | Status | Notes |
 |---|---|---|
-| `.card, .panel, .section` | ⚠️ Partial | Sections use `col-md-6`, not `.card`. May match wrapping elements. |
-| `h4, h5, h6, .card-header, strong, .section-title` | ✅ Works | Headings like "Diagnosis", "Radiology" are heading elements |
-| `p, li, .item-text, .summary-item` | ⚠️ Partial | Items aren't standard `<li>` — they use bold label + text structure |
+| `.col-md-6` | ✅ Primary | Read with `el.innerText.split('\n')` — first line is section title |
+| `.card, .panel, .section` | ❌ Wrong | Sections are NOT `.card` or `.panel` elements |
+| `h4, h5, h6, strong` | ✅ Fallback | Section title may also appear inside a `<strong>` tag |
+| `p, li, .item-text` | ❌ Wrong | Items are plain text nodes, not `<p>`/`<li>` elements |
 | `.btn-patient-checkout` | ✅ Works | `<button class="btn btn-teal btn-patient-checkout">Check Out</button>` |
 | `a[href*="resetTokenHomeButton"]` | ✅ Works | `<a href=".../resetTokenHomeButton/{id}">Release Patient Token</a>` |
 | `.btn-release-token` | ❌ Not found | Dead fallback — first selector works |
@@ -130,7 +148,47 @@ Name: SHAFIA M RIZWAN | Contact: 0300-6566007 | Age: 46y, 2m, 19d | MRN: 1920264
 
 ---
 
-## 5. Diagnosis Tab — ✅ Verified Live
+## 4b. Checkout Flow — ✅ Verified Live (2026-05-04, TEHREEM AKHTAR)
+
+### Checkout Button
+- **Selector:** `.btn-patient-checkout`
+- **HTML:** `<button class="btn btn-teal btn-patient-checkout">Check Out</button>`
+- **Location:** Top-right of patient page, inside the patient info bar area
+
+### Checkout Prerequisite
+> [!CAUTION]
+> HMIS **validates** before showing any popup. If no diagnosis has been entered in the current visit, checkout is **blocked** with a red toast/error:
+> `"Please fill data against Diagnosis section."`
+> In this case, NO SweetAlert2 popup appears. The extension detects this toast and throws an error, triggering token release.
+
+### SweetAlert2 Confirmation Popup (appears on valid checkout attempt)
+```
+Title:   "Are you sure?"
+Body:    (empty or short message)
+Button 1 (Confirm): text="Yes"  class=.swal2-confirm  (green)
+Button 2 (Cancel):  text="No"   class=.swal2-cancel   (red)
+```
+
+### Checkout Selectors
+
+| Element | Selector | Status |
+|---|---|---|
+| Checkout button | `.btn-patient-checkout` | ✅ Works |
+| SweetAlert2 popup container | `.swal2-container`, `.swal2-popup` | ✅ Works |
+| Confirm button ("Yes") | `.swal2-confirm` | ✅ Works |
+| Cancel button ("No") | `.swal2-cancel` | ✅ Works |
+| Validation error toast | `.toast-error`, `.alert-danger` | ✅ Works |
+
+### Post-Checkout Navigation
+After clicking `.swal2-confirm`, HMIS automatically redirects to `/token/today`. The extension does not need to manually redirect.
+
+### Release Patient Token (error fallback, no checkout)
+- **Selector:** `a[href*="resetTokenHomeButton"]`
+- **No popup** — clicking directly navigates to `/token/today`
+- Use when checkout fails/is blocked (e.g. no diagnosis entered)
+
+---
+
 
 ### Layout
 - Left: Form (Type + Search + Save) + existing diagnoses table

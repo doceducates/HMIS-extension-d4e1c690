@@ -102,5 +102,53 @@ export const HMIS_SELECTORS = {
         COMPLAINTS: '#complaints-component, [class*="complaint"], .complaints-section',
         MEDICATIONS: '#medication-component, [class*="medicine"], .medications-section',
         ALLERGIES: '[class*="allergy"], .alert-danger, .allergies-section'
+    },
+
+    // 11. Radiology Reporting & Cross-Sectional Form (Verified via Live HMIS DOM & Trace)
+    RADIOLOGY_REPORT: {
+        // Modal / Container
+        MODAL_CONTAINER: '#AddSampleResult',
+        MODULE_SELECT: '#changeModule, select[wire\\:model="moduleId"]',
+        
+        // Template Selection Pickers (Live wireModel bindings)
+        TEMPLATE_REMARKS_HISTORY: 'select[wire\\:model*="radiology_template_remarks"][wire\\:model*="1758"]',
+        TEMPLATE_REMARKS_REPORT: 'select[wire\\:model*="radiology_template_remarks"][wire\\:model*="1759"]',
+        TEMPLATE_REMARKS_IMPRESSION: 'select[wire\\:model*="radiology_template_remarks"][wire\\:model*="1760"]',
+        TEMPLATE_SELECT_REPORT: 'select[wire\\:model*="radiology_template_remarks"]',
+        
+        // TinyMCE Editor Iframes
+        HISTORY_IFRAME: 'iframe[id*="_history_"][id$="_ifr"]',
+        REPORT_IFRAME: 'iframe[id*="_report_"][id$="_ifr"]',
+        IMPRESSION_IFRAME: 'iframe[id*="_impression_"][id$="_ifr"]',
+        
+        // Native Textareas with verified wire:model and dynamic IDs
+        HISTORY_TEXTAREA: 'textarea[id*="_history_"], textarea[wire\\:model*="_history"]',
+        REPORT_TEXTAREA: 'textarea[id*="_report_"], textarea[wire\\:model*="_report"]',
+        IMPRESSION_TEXTAREA: 'textarea[id*="_impression_"], textarea[wire\\:model*="_impression"]',
+        TECHNIQUE_INPUT: 'input[name*="technique"], textarea[name*="technique"]',
+        COMMENTS_TEXTAREA: '#comments, textarea[wire\\:model="comments"]',
+        
+        // Action Buttons
+        SAVE_DRAFT_BTN: 'button[wire\\:click="save(\'save\')"]',
+        SUBMIT_FINAL_BTN: 'button[wire\\:click="save(\'submit\')"]', // Locked for clinical testing
+        CLOSE_MODAL_BTN: '#btn_closeAddAccessionResult',
+        PATIENT_HISTORY_BTN: 'a[wire\\:click*="patientHistoryModal"], button[wire\\:click*="patientHistoryModal"]',
+        IMAGE_STUDIES_BTN: 'a[wire\\:click*="getPatientStudies"], button[wire\\:click*="getPatientStudies"]',
+        REJECT_BTN: 'a[wire\\:click*="patient_investigation_id"], button[wire\\:click*="patient_investigation_id"]',
+        ADD_HISTORY_BTN: 'a[wire\\:click*="Addhistory"], button[wire\\:click*="Addhistory"]',
+        ADD_VITALS_BTN: 'a[wire\\:click*="Addvital"], button[wire\\:click*="Addvital"]',
+        
+        // History Modal & Tables
+        PATIENT_HISTORY_MODAL: '#patientHistoryModal, div[id*="patientHistory"], .modal.show',
+        PATIENT_HISTORY_TABLES: '#patientHistoryModal table, .modal.show table',
+        PATIENT_HISTORY_CLOSE: '#patientHistoryModal .close, #patientHistoryModal .btn-close, .modal.show button.btn-secondary',
+        
+        // Patient Worklist / Search on /radiology/proceeded-patients & tracking
+        SEARCH_MRN: 'input[wire\\:model\\.defer="searchMrn"], input[wire\\:model\\.defer="searchFilters.mrn"], input[placeholder*="MRN" i]',
+        SEARCH_ACCESSION: 'input[wire\\:model\\.defer="searchAccession"], input[wire\\:model\\.defer="searchFilters.accession"], input[placeholder*="Accession" i]',
+        SEARCH_BTN: 'button[wire\\:click="searchRecords"], button.btn-theme-green, button:has-text("Search")',
+        RESET_SEARCH_BTN: 'button[wire\\:click="clearSearch"], button.reset-bth',
+        TIME_FILTER_SELECT: 'select[wire\\:model="time_list"], select[name="time_list"]',
+        ADD_RESULT_BTN: 'a[wire\\:click*="addSampleResult"], button[wire\\:click*="addSampleResult"], a:has-text("Add Result")'
     }
 };

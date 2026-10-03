@@ -5,6 +5,18 @@ import { getCurrentConfig } from './modules/config';
 import { HMISPageContext, QueuePatient } from './modules/types';
 import { HMIS_SELECTORS } from './modules/selectors';
 import { WorkflowState, reportStatus, setRunning, broadcastQueueStats } from './modules/state';
+import {
+    autofillRadiologyReport,
+    RadiologyReportPayload,
+    extractActiveInvestigation,
+    fetchPatientHistoryModal,
+    setModuleId,
+    triggerHmisSaveDraft,
+    triggerHmisFinalSubmit,
+    triggerHmisPatientStudies,
+    triggerHmisRejectInvestigation
+} from './modules/radiology-handler';
+import { mountInjectedDock } from './modules/injected-dock';
 
 /**
  * HMIS Automation Content Script Orchestrator
@@ -21,6 +33,23 @@ async function run() {
     if (!liveConfig) {
         liveConfig = await getCurrentConfig();
     }
+
+    // Check if there is a pending staged radiology report waiting to autofill
+    const staged = await chrome.storage.session.get('stagedRadiologyReport');
+    if (staged?.stagedRadiologyReport) {
+        const modal = document.querySelector(HMIS_SELECTORS.RADIOLOGY_REPORT.MODAL_CONTAINER);
+        const reportIframe = document.querySelector(HMIS_SELECTORS.RADIOLOGY_REPORT.REPORT_IFRAME);
+        if (modal || reportIframe) {
+            console.log('[HMIS_RAD] Found staged radiology report on page load. Autofilling...');
+            await autofillRadiologyReport(staged.stagedRadiologyReport as RadiologyReportPayload);
+            await chrome.storage.session.remove('stagedRadiologyReport');
+        }
+    }
+    // Always attempt to mount floating assistant dock on HMIS portal
+    mountInjectedDock();
+    const dockObserver = new MutationObserver(() => mountInjectedDock());
+    dockObserver.observe(document.body, { childList: true, subtree: true });
+
     const page = detectPageContext(window.location.pathname);
 
     // Check if automation is supposed to be running
@@ -199,6 +228,88 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         } else {
             sendResponse({ success: false, error: 'Patient not found on current page' });
         }
+        return true;
+    }
+
+    if (request.action === 'SWITCH_USER_ROLE') {
+        const roleId = request.roleId;
+        const roleToggle = document.querySelector(HMIS_SELECTORS.NAV.SWITCH_ROLE) as HTMLElement;
+        if (!roleToggle) {
+            sendResponse({ success: false, error: 'Role switcher dropdown button not found on this page.' });
+            return true;
+        }
+
+        reportStatus(`Initiating role switch to ${roleId}...`, 'progress');
+        roleToggle.click();
+
+        setTimeout(() => {
+            let roleLink = document.querySelector(`a[wire\\:click*="saveCurrentRole"][wire\\:click*="${roleId}"]`) as HTMLElement;
+            if (!roleLink) {
+                roleLink = document.querySelector(`a[href*="${roleId}"]`) as HTMLElement;
+            }
+
+            if (roleLink) {
+                roleLink.click();
+                reportStatus(`Role selection submitted (ID: ${roleId})`, 'success');
+                sendResponse({ success: true, message: `Switching to role ID ${roleId}. Page will reload.` });
+            } else {
+                roleToggle.click(); // Close the dropdown menu we opened
+                reportStatus(`Role ID ${roleId} not found in dropdown`, 'error');
+                sendResponse({ success: false, error: `Role ID ${roleId} not found in header dropdown.` });
+            }
+        }, 600);
+        return true;
+    }
+
+    if (request.action === 'FILL_RADIOLOGY_REPORT') {
+        autofillRadiologyReport(request.payload)
+            .then((res) => sendResponse(res))
+            .catch((err) => sendResponse({ success: false, error: err.message }));
+        return true;
+    }
+
+    if (request.action === 'GET_CURRENT_INVESTIGATION') {
+        const details = extractActiveInvestigation();
+        sendResponse({ success: true, data: details });
+        return true;
+    }
+
+    if (request.action === 'GET_PATIENT_HISTORY') {
+        fetchPatientHistoryModal(request.investigationId)
+            .then((history) => sendResponse({ success: true, data: history }))
+            .catch((err) => sendResponse({ success: false, error: err.message }));
+        return true;
+    }
+
+    if (request.action === 'SET_MODULE_ID') {
+        const ok = setModuleId(request.moduleId);
+        sendResponse({ success: ok });
+        return true;
+    }
+
+    if (request.action === 'TRIGGER_SAVE_DRAFT') {
+        triggerHmisSaveDraft()
+            .then((ok) => sendResponse({ success: ok }))
+            .catch((err) => sendResponse({ success: false, error: err.message }));
+        return true;
+    }
+
+    if (request.action === 'TRIGGER_SUBMIT_FINAL') {
+        triggerHmisFinalSubmit()
+            .then((ok) => sendResponse({ success: ok }))
+            .catch((err) => sendResponse({ success: false, error: err.message }));
+        return true;
+    }
+
+    if (request.action === 'TRIGGER_PATIENT_STUDIES') {
+        const ok = triggerHmisPatientStudies(request.studyId);
+        sendResponse({ success: ok });
+        return true;
+    }
+
+    if (request.action === 'TRIGGER_REJECT_INVESTIGATION') {
+        const ok = triggerHmisRejectInvestigation(request.investigationId);
+        sendResponse({ success: ok });
         return true;
     }
 });

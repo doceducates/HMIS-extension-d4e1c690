@@ -18,6 +18,7 @@
     "vite-plugin-static-copy": "^1.0.6"
   },
   "dependencies": {
-    "@huggingface/transformers": "^4.2.0"
+    "@huggingface/transformers": "^4.2.0",
+    "ws": "^8.21.0"
   }
 }

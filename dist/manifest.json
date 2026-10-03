@@ -23,7 +23,17 @@
   "content_scripts": [
     {
       "js": [
-        "assets/content.ts-loader-cjl8br37.js"
+        "assets/main-world-bridge.ts-D054NCb2.js"
+      ],
+      "matches": [
+        "*://hmis.punjab.gov.pk/*"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "js": [
+        "assets/content.ts-loader-tMV-3koU.js"
       ],
       "matches": [
         "*://hmis.punjab.gov.pk/*"
@@ -49,8 +59,9 @@
         "*://hmis.punjab.gov.pk/*"
       ],
       "resources": [
+        "assets/main-world-bridge.ts-D054NCb2.js",
         "assets/ai-engine-sKICGBjt.js",
-        "assets/content.ts-C2m-XVdB.js"
+        "assets/content.ts-BBBF30Cq.js"
       ],
       "use_dynamic_url": false
     }

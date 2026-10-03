@@ -25,6 +25,14 @@
       "matches": [
         "*://hmis.punjab.gov.pk/*"
       ],
+      "js": ["src/main-world-bridge.ts"],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "*://hmis.punjab.gov.pk/*"
+      ],
       "js": ["src/content.ts"],
       "run_at": "document_idle"
     }

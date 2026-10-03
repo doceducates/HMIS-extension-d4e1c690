@@ -1,0 +1,745 @@
+[
+  {
+    "id": "ct-brain-plain",
+    "name": "CT Brain (Non-Contrast / Emergency Trauma)",
+    "modality": "CT",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "CT BRAIN PLAIN / TRAUMA PROTOCOL",
+    "description": "Standard emergency trauma and stroke non-contrast brain CT.",
+    "technique": "Non-contrast contiguous volumetric axial helical CT from skull base to vertex with 1.25 mm slices and bone/soft tissue reformats.",
+    "normalFindings": [
+      "Preserved gray-white matter differentiation bilaterally without loss of insular ribbon definition or focal hypoattenuation.",
+      "No acute intra-axial, intraventricular, subarachnoid, subdural, or epidural intracranial hemorrhage.",
+      "Bilateral basal ganglia, internal capsules, thalami, brainstem, and cerebellar hemispheres demonstrate normal CT attenuation.",
+      "Ventricular system and basal cisterns demonstrate normal age-appropriate caliber and symmetry without hydrocephalus or midline shift.",
+      "Sellar region, major dural venous sinuses, and visualized cavernous sinuses are unremarkable.",
+      "Calvarium and skull base demonstrate intact cortical margins without acute fracture, lytic, or sclerotic lesions."
+    ],
+    "defaultImpression": "1. No acute intracranial hemorrhage, territorial acute infarct, or space-occupying lesion.\n2. Preserved gray-white differentiation with normal ventricular size and no midline shift.\n3. Calvarium and skull base are intact without fracture."
+  },
+  {
+    "id": "ct-cervical-spine",
+    "name": "CT Cervical Spine (Trauma & Degenerative)",
+    "modality": "CT",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "CT CERVICAL SPINE PROTOCOL",
+    "description": "Helical volumetric CT of the cervical spine from occiput to T1.",
+    "technique": "Volumetric helical acquisition from skull base through T1 with 0.625 mm isotropic voxels and multiplanar sagittal/coronal reformats.",
+    "normalFindings": [
+      "Normal cervical lordosis is preserved without traumatic anterolisthesis, retrolisthesis, or subluxation.",
+      "Atlanto-occipital and atlantoaxial articulations are anatomical. Atlantodental interval is normal (<3 mm). Odontoid peg is intact.",
+      "Vertebral body heights and posterior elements are maintained from C1 through T1 without acute fracture.",
+      "Intervertebral disc heights are preserved without high-grade canal or exit foraminal stenosis.",
+      "Prevertebral and retropharyngeal soft tissue thicknesses are within normal limits without hematoma or swelling."
+    ],
+    "defaultImpression": "1. No acute cervical spine fracture, dislocation, or traumatic malalignment.\n2. Intact craniocervical and atlantoaxial junctions.\n3. Maintained spinal canal and neural exit foramina."
+  },
+  {
+    "id": "ct-lumbar-spine",
+    "name": "CT Lumbar Spine",
+    "modality": "CT",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "CT LUMBAR SPINE PROTOCOL",
+    "description": "Volumetric CT of the lumbar spine for trauma, pars defects, and osseous alignment.",
+    "technique": "Helical volumetric acquisition from T12 through S2 with thin collimation, bone algorithm filtering, and sagittal/coronal reformations.",
+    "normalFindings": [
+      "Normal lumbar lordosis is maintained. Vertebral body heights and cortical margins are preserved from L1 through L5.",
+      "No acute fracture, compression collapse, spondylolysis, or spondylolisthesis identified.",
+      "Pedicles, laminae, transverse processes, and spinous processes are intact bilaterally.",
+      "Intervertebral disc heights are maintained without vacuum phenomenon or advanced degenerative endplate changes.",
+      "Central spinal canal and neural exit foramina demonstrate maintained caliber at all levels.",
+      "Sacroiliac joints and retroperitoneal soft tissues appear unremarkable."
+    ],
+    "defaultImpression": "1. No acute lumbar vertebral fracture, listhesis, or traumatic osseous defect.\n2. Preserved lumbar vertebral alignment and intervertebral disc spaces without high-grade canal or foraminal stenosis."
+  },
+  {
+    "id": "ct-orbits",
+    "name": "CT Orbits (Contrast / Non-Contrast)",
+    "modality": "CT",
+    "subspecialty": "Head & Neck",
+    "subtitle": "CT ORBITS PROTOCOL",
+    "description": "High-resolution volumetric helical CT of the orbits and retrobulbar spaces.",
+    "technique": "Volumetric helical CT from superior orbital ridge through maxillary teeth with 0.625 mm slices and multiplanar reformats.",
+    "normalFindings": [
+      "Both globes are symmetric in contour, size, and internal attenuation without intraocular mass, calcification, or foreign body.",
+      "Intraconal and extraconal fat planes are preserved without stranding, mass, or inflammatory infiltration.",
+      "Optic nerve-sheath complexes demonstrate symmetric caliber and normal course through the optic canals.",
+      "Extraocular muscles (recti and obliques) demonstrate normal symmetric bulk, tendon insertions, and attenuation.",
+      "Orbital walls (lamina papyracea, orbital floor, and roof) are intact bilaterally without fracture or fat herniation.",
+      "Lacrimal glands are symmetric and normal in size. Paranasal sinuses are clear."
+    ],
+    "defaultImpression": "1. Normal CT orbits bilaterally without intraocular mass, foreign body, or retrobulbar pathology.\n2. Intact orbital walls bilaterally with symmetric extraocular muscles and preserved optic nerve complexes."
+  },
+  {
+    "id": "ct-pns",
+    "name": "CT Paranasal Sinuses (PNS / FESS Protocol)",
+    "modality": "CT",
+    "subspecialty": "Head & Neck",
+    "subtitle": "CT PNS NON-CONTRAST",
+    "description": "High-resolution non-contrast coronal and axial CT for sinonasal anatomy and pre-FESS roadmap.",
+    "technique": "Non-contrast volumetric helical scan with 0.625 mm isotropic bone and soft tissue algorithm reformations.",
+    "normalFindings": [
+      "Frontal, maxillary, ethmoidal, and sphenoid sinuses are well-developed and clear without mucosal thickening or air-fluid levels.",
+      "Bilateral osteomeatal complexes (OMCs), frontal recesses, and sphenoethmoidal recesses are widely patent.",
+      "Lamina papyracea, cribriform plates, and fovea ethmoidalis are intact bilaterally without cortical erosion or dehiscence.",
+      "Nasal septum is centrally aligned without deviation or obstructing spur. Bilateral turbinates demonstrate normal morphology.",
+      "Mastoid air cells are well-aerated. Visualized skull base and orbits are intact."
+    ],
+    "defaultImpression": "1. Completely aerated paranasal sinuses without acute or chronic sinonasal inflammatory disease.\n2. Patent bilateral osteomeatal units with midline nasal septum and intact skull base boundaries."
+  },
+  {
+    "id": "ct-facial-bones",
+    "name": "CT Facial Bones (Maxillofacial Trauma)",
+    "modality": "CT",
+    "subspecialty": "Head & Neck",
+    "subtitle": "CT FACIAL BONES TRAUMA",
+    "description": "High-resolution CT for maxillofacial, mandibular, and midface trauma evaluation.",
+    "technique": "Volumetric axial CT from calvarial vertex through inferior mandible with 0.625 mm slices and 3D volume-rendered reformats.",
+    "normalFindings": [
+      "Zygomatic arches, zygomaticomaxillary buttresses, infraorbital rims, and nasal bones demonstrate intact cortical margins.",
+      "No Le Fort type I, II, or III fracture patterns identified.",
+      "Bilateral orbital roofs, floors, and medial/lateral walls are intact without defect or herniation.",
+      "Mandible is intact throughout (symphysis, body, angles, rami, condyles). Bilateral TMJs are anatomically congruent.",
+      "Paranasal sinuses and nasal cavity are clear without hemosinus or air-fluid level.",
+      "Facial subcutaneous soft tissue planes are preserved without hematoma or emphysema."
+    ],
+    "defaultImpression": "1. No acute facial bone fracture, osseous cortical disruption, or dislocation.\n2. Anatomically congruent temporomandibular joints and intact orbital boundaries.\n3. No hemosinus or deep facial soft tissue hematoma."
+  },
+  {
+    "id": "ct-neck-cect",
+    "name": "CT Neck (Contrast-Enhanced)",
+    "modality": "CT",
+    "subspecialty": "Head & Neck",
+    "subtitle": "CT NECK SOFT TISSUE WITH CONTRAST",
+    "description": "Contrast-enhanced helical CT of suprahyoid and infrahyoid neck compartments.",
+    "technique": "Helical CT from skull base to aortic arch with IV non-ionic iodinated contrast during parenchymal phase, reconstructed in 1.25 mm slices.",
+    "normalFindings": [
+      "Nasopharynx, oropharynx, base of tongue, and floor of mouth are symmetric without mucosal mass or abnormal enhancement.",
+      "Epiglottis, pyriform fossae, and true/false vocal cords are normal. Central airway is widely patent.",
+      "Parotid, submandibular, and thyroid glands demonstrate homogeneous enhancement without focal nodule, mass, or stone.",
+      "No pathologically enlarged, necrotic, or matted cervical, supraclavicular, or upper mediastinal lymph nodes.",
+      "Carotid arteries and internal jugular veins are patent bilaterally with expected contrast opacification.",
+      "Visualized skull base and cervical spine demonstrate intact cortical margins without destructive lesion."
+    ],
+    "defaultImpression": "1. No evidence of mass lesion, abscess, or pathological enhancement in the suprahyoid or infrahyoid neck.\n2. Normal major salivary and thyroid glands.\n3. No pathologically enlarged or necrotic cervical lymphadenopathy."
+  },
+  {
+    "id": "ct-temporal-bones",
+    "name": "HRCT Temporal Bone (Mastoid & Petrous Pyramid)",
+    "modality": "CT",
+    "subspecialty": "Head & Neck",
+    "subtitle": "HRCT TEMPORAL BONE",
+    "description": "Ultra-thin sub-millimeter bone algorithm CT for middle ear, ossicles, and otic capsule.",
+    "technique": "Non-contrast volumetric CT of bilateral temporal bones with 0.5 mm slice thickness and high-resolution bone kernel reformats.",
+    "normalFindings": [
+      "External auditory canals are widely patent. Scutum is sharp and intact bilaterally. Tympanic membranes are thin and intact.",
+      "Malleus, incus, and stapes are intact, normally articulated, and demonstrate no erosion or dislocation.",
+      "Cochlea, vestibule, semicircular canals, and internal auditory canals demonstrate normal architecture.",
+      "Mastoid air cells and middle ear cavities are well-pneumatized bilaterally. Tegmen tympani is intact without dehiscence.",
+      "Facial nerve canal segments demonstrate normal course and intact bony margins. Carotid and jugular canals are normal."
+    ],
+    "defaultImpression": "1. Well-pneumatized middle ear cavities and mastoid complexes bilaterally without fluid or cholesteatoma.\n2. Intact and normally aligned ossicular chains bilaterally.\n3. Preserved otic capsules, tegmen tympani, and inner ear structures."
+  },
+  {
+    "id": "ct-chest-cect",
+    "name": "CT Chest (Contrast-Enhanced / Oncologic)",
+    "modality": "CT",
+    "subspecialty": "Thoracic",
+    "subtitle": "CT CHEST WITH CONTRAST",
+    "description": "Contrast-enhanced thoracic CT for parenchymal, mediastinal, and pleural evaluation.",
+    "technique": "Helical CT from lung apices to adrenal glands in venous phase (60-70s) with 1.25 mm axial and multiplanar reformats.",
+    "normalFindings": [
+      "Tracheobronchial tree is patent without intraluminal lesion, extrinsic compression, or wall thickening.",
+      "Both lungs are clear and expanded without consolidation, suspicious pulmonary nodule, mass, or ground-glass opacities.",
+      "No pleural effusion, pleural thickening, or pneumothorax is identified on either side.",
+      "Mediastinal contours are normal without mass. No mediastinal, hilar, or axillary lymphadenopathy.",
+      "Heart size is normal. Pericardium is thin without effusion. Thoracic aorta and pulmonary artery are normal in caliber.",
+      "Thoracic osseous cage is intact without lytic or sclerotic lesions. Upper abdominal viscera appear unremarkable."
+    ],
+    "defaultImpression": "1. Clear lung parenchyma bilaterally without consolidation, suspicious nodule, or mass.\n2. No mediastinal or hilar lymphadenopathy.\n3. No pleural effusion or acute thoracic cardiovascular abnormality."
+  },
+  {
+    "id": "ct-hrct-chest",
+    "name": "HRCT Thorax (Interstitial Lung Disease Protocol)",
+    "modality": "CT",
+    "subspecialty": "Thoracic",
+    "subtitle": "HRCT CHEST NON-CONTRAST",
+    "description": "High-resolution non-contrast CT for diffuse interstitial lung disease and bronchiectasis.",
+    "technique": "Non-contrast volumetric CT at full inspiration with 1.0 mm slice collimation and high-spatial-frequency bone kernel.",
+    "normalFindings": [
+      "Trachea and central bronchi are patent without bronchiectasis, bronchial wall thickening, or mucus plugging.",
+      "No interlobular or intraluminal septal thickening, reticulation, honeycombing, or traction bronchiectasis.",
+      "No ground-glass opacification, air-space consolidation, mosaic attenuation, or emphysematous bullae.",
+      "Pleural spaces are clear without thickening, plaques, or effusion.",
+      "Mediastinal and hilar contours are normal without lymphadenopathy. Osseous thorax is intact."
+    ],
+    "defaultImpression": "1. Normal HRCT thorax examination.\n2. No evidence of interstitial lung disease (UIP/NSIP pattern), active inflammatory infiltrate, or bronchiectasis."
+  },
+  {
+    "id": "ct-pulmonary-angiogram",
+    "name": "CT Pulmonary Angiography (CTPA / PE Protocol)",
+    "modality": "CT",
+    "subspecialty": "Thoracic",
+    "subtitle": "CTPA PULMONARY EMBOLISM PROTOCOL",
+    "description": "High-flow bolus-tracked CT angiography of the pulmonary arterial tree.",
+    "technique": "Bolus-tracked volumetric CTPA from diaphragm to apices following 75 mL non-ionic contrast at 4.0-4.5 mL/s.",
+    "normalFindings": [
+      "Main pulmonary trunk, right and left pulmonary arteries, and all lobar/segmental branches demonstrate homogeneous opacification.",
+      "No intraluminal filling defect, cutoff sign, or mural thrombus to suggest pulmonary embolism.",
+      "Main pulmonary artery caliber is normal (<29 mm). RV/LV ratio is normal (<1.0) without right ventricular strain.",
+      "Lungs are clear without wedge-shaped peripheral infarct or consolidation. No pleural effusion.",
+      "Thoracic aorta is normal in caliber. No pericardial effusion or pathological lymphadenopathy."
+    ],
+    "defaultImpression": "1. Negative for acute pulmonary embolism to the subsegmental arterial level.\n2. No evidence of right ventricular strain or pulmonary arterial hypertension.\n3. Clear lungs bilaterally with no pulmonary infarction."
+  },
+  {
+    "id": "ct-abdomen-pelvis-cect",
+    "name": "CT Abdomen & Pelvis (Contrast-Enhanced)",
+    "modality": "CT",
+    "subspecialty": "Abdominal",
+    "subtitle": "CT ABDOMEN & PELVIS PORTAL VENOUS",
+    "description": "Standard contrast-enhanced portal venous phase cross-sectional abdominal & pelvic CT.",
+    "technique": "Contrast-enhanced helical CT of abdomen and pelvis in portal venous phase (70s) with 2.5 mm multiplanar reformats.",
+    "normalFindings": [
+      "Liver demonstrates normal size, contours, and homogeneous enhancement without focal lesion. Biliary channels are nondilated.",
+      "Gallbladder is distended with thin walls; no radiopaque stone or pericholecystic stranding. Portal/hepatic veins are patent.",
+      "Spleen, pancreas, and bilateral adrenal glands are normal in morphology and enhancement.",
+      "Both kidneys demonstrate normal size and symmetric nephrograms without hydronephrosis, calculus, or focal mass.",
+      "Gastrointestinal tract is unremarkable with normal wall thickness; appendix is normal (<6 mm) without inflammation.",
+      "No free intraperitoneal air, pathologically enlarged mesenteric/retroperitoneal lymph nodes, or ascites.",
+      "Pelvic reproductive organs are unremarkable. Osseous structures of the spine and pelvis show no destructive lesion."
+    ],
+    "defaultImpression": "1. No acute intra-abdominal inflammatory process, bowel obstruction, or focal parenchymal mass.\n2. Normal solid abdominal and pelvic viscera.\n3. No pneumoperitoneum, ascites, or significant lymphadenopathy."
+  },
+  {
+    "id": "ct-kub-plain",
+    "name": "CT KUB (Low-Dose Non-Contrast Calculus Protocol)",
+    "modality": "CT",
+    "subspecialty": "Abdominal",
+    "subtitle": "CT KUB STONE PROTOCOL",
+    "description": "Unenhanced low-dose volumetric CT from kidneys to pubic symphysis for urolithiasis.",
+    "technique": "Low-dose non-contrast volumetric helical CT from renal upper poles through pubic symphysis with 2.0 mm reformats.",
+    "normalFindings": [
+      "Both kidneys are normal in size, shape, position, and parenchymal attenuation.",
+      "Corticomedullary differentiation is preserved bilaterally without hyperdense calculus, cyst, or solid mass.",
+      "No hydronephrosis, calyceal blunting, or perinephric fat stranding on either side.",
+      "Bilateral ureters demonstrate normal course and caliber without dilatation, intraluminal calculus, or periureteric stranding.",
+      "Urinary bladder is adequately distended with smooth, regular walls; no radiodense calculus or mural thickening.",
+      "Visualized osseous structures of the spine and pelvis show intact bone architecture with no acute fracture or destructive lesion."
+    ],
+    "defaultImpression": "1. No radiodense renal, ureteric, or vesical calculus.\n2. No evidence of obstructive uropathy or hydronephrosis bilaterally."
+  },
+  {
+    "id": "ct-renal-multiphasic",
+    "name": "CT Multiphasic Renal Protocol (Renal Mass Evaluation)",
+    "modality": "CT",
+    "subspecialty": "Abdominal",
+    "subtitle": "CT RENAL FOUR-PHASE PROTOCOL",
+    "description": "Dedicated multiphase renal CT (unenhanced, corticomedullary, nephrographic, excretory).",
+    "technique": "Unenhanced baseline, corticomedullary (25-30s), nephrographic (80-100s), and delayed excretory (8-10 min) CT phases.",
+    "normalFindings": [
+      "Non-enhanced phase: Both kidneys are normal in position and attenuation without calculus or spontaneous hyperdensity.",
+      "Corticomedullary phase: Prompt, symmetric opacification of renal cortices. Main renal vessels are patent without thrombus.",
+      "Nephrographic phase: Homogeneous parenchymal enhancement bilaterally without hypo/hyper-enhancing focal renal mass or scar.",
+      "Excretory phase: Prompt contrast excretion into pelvicalyceal systems without filling defect, caliectasis, or urothelial thickening.",
+      "Bilateral ureters and urinary bladder demonstrate uniform contrast filling without filling defects or diverticula.",
+      "Adrenal glands, retroperitoneum, and bone windows demonstrate no pathological abnormality."
+    ],
+    "defaultImpression": "1. Normal multiphasic CT renal examination with symmetric enhancement and excretion bilaterally.\n2. No focal renal parenchymal mass, calculus, or urothelial filling defect.\n3. No renal vein invasion or retroperitoneal lymphadenopathy."
+  },
+  {
+    "id": "ct-renal-donor-cta",
+    "name": "CT Renal Angiography & Living Donor Evaluation",
+    "modality": "CT",
+    "subspecialty": "Vascular",
+    "subtitle": "CT RENAL DONOR / ANGIOGRAPHY",
+    "description": "Multiphase arterial and excretory CT for renal vascular mapping and pre-transplant donor planning.",
+    "technique": "Multiphase CT with unenhanced, arterial bolus-tracked, venous, and delayed excretory phases with 3D vascular maps.",
+    "normalFindings": [
+      "Right kidney: Normal parenchymal morphology. Single right renal artery with standard hilar bifurcation; single renal vein into IVC.",
+      "Left kidney: Normal parenchymal morphology. Single left renal artery; single left renal vein crossing anterior to aorta.",
+      "No accessory, early-branching, or polar renal arteries identified bilaterally.",
+      "Collecting systems: Bilateral single ureters draining normally without duplication, stricture, or calculus.",
+      "Abdominal aorta is normal in caliber without significant atheromatous disease or stenosis."
+    ],
+    "defaultImpression": "1. Standard bilateral single renal artery and single renal vein anatomy without accessory vascular variants.\n2. Bilateral single collecting systems without duplication or lithiasis.\n3. Preserved parenchymal volume and symmetric enhancement bilaterally."
+  },
+  {
+    "id": "ct-cta-lower-extremity",
+    "name": "CT Angiography Lower Extremity Runoff",
+    "modality": "CT",
+    "subspecialty": "Vascular",
+    "subtitle": "CTA LOWER LIMB RUNOFF",
+    "description": "Bolus-tracked CT angiography from abdominal aorta through plantar arches.",
+    "technique": "Helical CTA from infrarenal aorta to feet with automated bolus tracking, thin collimation, and 3D MIP reconstructions.",
+    "normalFindings": [
+      "Infrarenal abdominal aorta, common iliac, and external iliac arteries demonstrate smooth caliber without aneurysm or stenosis.",
+      "Common femoral, profunda femoris, superficial femoral, and popliteal arteries are patent bilaterally without occlusion.",
+      "Patent three-vessel tibial runoff bilaterally (anterior tibial, posterior tibial, and peroneal arteries) into pedal arches.",
+      "No flow-limiting arterial stenosis, occlusion, dissection, pseudoaneurysm, or active extravasation.",
+      "Surrounding muscles and soft tissues are unremarkable without hematoma. Visualized bones show no acute fracture."
+    ],
+    "defaultImpression": "1. Widely patent aortoiliac, femoropopliteal, and infrapopliteal arterial systems with symmetric three-vessel tibial runoff.\n2. No evidence of flow-limiting stenosis, arterial occlusion, or acute extravasation."
+  },
+  {
+    "id": "mri-brain-routine",
+    "name": "MRI Brain (Routine Multiparametric)",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRI BRAIN ROUTINE PROTOCOL",
+    "description": "Multiparametric MRI brain with T1, T2, FLAIR, and DWI/ADC.",
+    "technique": "Multiplanar MRI including Axial T1W, T2W, FLAIR, DWI/ADC, Coronal T2W, and Sagittal T1W on high-field system.",
+    "normalFindings": [
+      "Preserved gray-white matter differentiation without focal cortical dysplasia, gliosis, or white matter lesion.",
+      "No restricted diffusion on DWI/ADC to suggest acute ischemia. No hemorrhage or microbleeds on susceptibility sequences.",
+      "Basal ganglia, internal capsules, thalami, brainstem, and cerebellar hemispheres demonstrate normal signal intensity.",
+      "Ventricular system, basal cisterns, and cortical sulcal spaces demonstrate age-appropriate caliber without hydrocephalus or shift.",
+      "Pituitary gland, optic chiasm, and major intracranial flow voids are preserved.",
+      "Calvarium and skull base demonstrate normal marrow signal. Paranasal sinuses and mastoids are clear."
+    ],
+    "defaultImpression": "1. No acute intra-axial or extra-axial intracranial abnormality.\n2. Preserved gray-white differentiation with no acute territorial infarction, hemorrhage, or mass effect."
+  },
+  {
+    "id": "mri-brain-stroke",
+    "name": "MRI Brain (Stroke & Acute Ischemia Protocol)",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRI BRAIN STROKE / ISCHEMIA",
+    "description": "Emergency stroke protocol with DWI, ADC mapping, FLAIR, SWI, and 3D TOF MRA.",
+    "technique": "High-b-value Axial DWI (b=0, b=1000 s/mm²) with ADC maps, Axial FLAIR, T2W, SWI, and 3D TOF circle of Willis.",
+    "normalFindings": [
+      "No area of hyperintensity on DWI with corresponding ADC hypointensity; negative for acute territorial or lacunar ischemia.",
+      "No acute cortical swelling or early ischemic hyperintensity on FLAIR/T2.",
+      "No focal magnetic susceptibility signal loss or blooming on SWI to suggest petechial hemorrhage or microbleeds.",
+      "Preserved flow-related signals in bilateral ICAs, MCAs (M1/M2), ACAs, basilar artery, and PCAs without cutoff or stenosis.",
+      "No midline shift, mass effect, or brain herniation."
+    ],
+    "defaultImpression": "1. No evidence of acute territorial, cortical, or lacunar infarction on diffusion-weighted imaging (DWI/ADC negative).\n2. No intracranial hemorrhage or microbleeds on SWI.\n3. Preserved patency of major intracranial arteries."
+  },
+  {
+    "id": "mra-brain-tof",
+    "name": "MRA Brain (3D Time-of-Flight Arterial)",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRA BRAIN 3D TOF",
+    "description": "Non-contrast 3D TOF angiography of the intracranial circle of Willis.",
+    "technique": "High-resolution 3D Time-of-Flight (TOF) non-contrast MRA of circle of Willis with multi-angle MIP reformats.",
+    "normalFindings": [
+      "Bilateral cavernous, ophthalmic, and supraclinoid internal carotid arteries demonstrate normal caliber and flow signal.",
+      "Anterior cerebral arteries (A1/A2) and anterior communicating artery are patent with regular lumens.",
+      "Middle cerebral arteries (M1, M2 bifurcation) are widely patent without abrupt cutoff, pruning, or significant stenosis.",
+      "Intracranial vertebral arteries, basilar artery, and bilateral posterior cerebral arteries (P1/P2) are smooth and patent.",
+      "No evidence of saccular aneurysm, vascular malformation, arteriovenous shunt, or vessel wall dissection."
+    ],
+    "defaultImpression": "1. Normal 3D TOF MR angiogram of the intracranial circulation.\n2. Widely patent circle of Willis with no flow-limiting stenosis, arterial occlusion, or intracranial aneurysm."
+  },
+  {
+    "id": "mrv-brain",
+    "name": "MRV Brain (Magnetic Resonance Venography)",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRV BRAIN DURAL VENOUS SINUSES",
+    "description": "Time-of-flight or phase-contrast venography of intracranial dural venous sinuses.",
+    "technique": "Non-contrast MR venography from calvarial vertex through jugular bulbs with multiplanar MIP projections.",
+    "normalFindings": [
+      "Superior sagittal sinus demonstrates continuous, homogeneous flow-related signal throughout its course.",
+      "Straight sinus, inferior sagittal sinus, and vein of Galen demonstrate normal caliber and flow signal.",
+      "Bilateral transverse sinuses and sigmoid sinuses are well-visualized and continuous with internal jugular veins.",
+      "Confluence of sinuses (torcular herophili), internal cerebral veins, and basal veins of Rosenthal are patent.",
+      "No intraluminal filling defect, flow gap, cord-like signal void loss, or dural sinus thrombosis identified."
+    ],
+    "defaultImpression": "1. Widely patent intracranial dural venous sinuses and deep cerebral veins.\n2. No evidence of dural sinus thrombosis, venous stenosis, or occlusion."
+  },
+  {
+    "id": "mri-cervical-spine",
+    "name": "MRI Cervical Spine",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRI CERVICAL SPINE PROTOCOL",
+    "description": "Multiplanar MRI of cervical spine from foramen magnum through T1.",
+    "technique": "Sagittal T1W, Sagittal T2W, Sagittal STIR, and Axial T2W through cervical disc spaces C2-T1.",
+    "normalFindings": [
+      "Normal cervical lordosis is preserved without traumatic anterolisthesis or retrolisthesis.",
+      "Vertebral body heights, alignment, and bone marrow signal intensity are normal. No compression fracture or infiltrative lesion.",
+      "Atlantoaxial articulation and odontoid peg are intact. Cerebellar tonsils lie above the foramen magnum.",
+      "Intervertebral disc heights and hydration are preserved without focal disc bulge, protrusion, or extrusion.",
+      "Spinal canal and bilateral neural exit foramina are widely patent at all levels without root compression.",
+      "Cervical spinal cord demonstrates normal caliber and signal intensity without syrinx, myelopathy, or demyelination."
+    ],
+    "defaultImpression": "1. Normal MRI cervical spine without disc protrusion, canal stenosis, or foraminal compromise.\n2. Normal cervical cord signal intensity with no evidence of myelopathy or demyelinating plaque.\n3. Intact craniocervical junction."
+  },
+  {
+    "id": "mri-thoracic-spine",
+    "name": "MRI Thoracic Spine",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRI THORACIC SPINE PROTOCOL",
+    "description": "Multiplanar MRI of thoracic spine and dorsal cord.",
+    "technique": "Sagittal T1W, Sagittal T2W, Sagittal STIR, and Axial T2W through thoracic levels T1-T12.",
+    "normalFindings": [
+      "Physiological thoracic kyphosis is preserved without kyphoscoliotic deformity or subluxation.",
+      "Vertebral body heights are maintained without anterior wedge compression fracture or burst injury.",
+      "Homogeneous bone marrow signal intensity without focal marrow edema on STIR or destructive lesions.",
+      "Thoracic intervertebral discs demonstrate normal hydration and height without herniation or stenosis.",
+      "Thoracic spinal cord demonstrates uniform caliber and normal intramedullary signal without focal hyperintensity or syrinx.",
+      "Conus medullaris terminates normally and appears unremarkable. Paraspinal soft tissue planes are symmetric."
+    ],
+    "defaultImpression": "1. Unremarkable MRI of the thoracic spine with preserved dorsal kyphosis and disc morphology.\n2. No central canal stenosis, disc herniation, cord compression, or intramedullary cord signal abnormality."
+  },
+  {
+    "id": "mri-lumbar-spine",
+    "name": "MRI Lumbosacral Spine",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI LUMBAR SPINE PROTOCOL",
+    "description": "Multiplanar MRI of lumbosacral spine for radiculopathy, stenosis, and disc disease.",
+    "technique": "Sagittal T1W, Sagittal T2W, Sagittal STIR, and Axial T2W through disc spaces L1-S1.",
+    "normalFindings": [
+      "Normal lumbar lordosis is maintained without spondylolisthesis or retrolisthesis.",
+      "Vertebral body heights, cortical margins, and bone marrow signal intensity are normal without fracture or Modic changes.",
+      "Intervertebral disc heights and T2 hydration signals are maintained without focal protrusion, extrusion, or annular fissure.",
+      "Central canal, lateral recesses, and neural exit foramina are widely patent at all lumbar levels.",
+      "Conus medullaris terminates normally at L1/L2 with normal caliber and signal. Cauda equina nerve roots are symmetric.",
+      "Facet joints, ligamenta flava, and paraspinal musculature demonstrate normal morphology."
+    ],
+    "defaultImpression": "1. Normal MRI of the lumbosacral spine with preserved disc heights and hydration.\n2. No evidence of disc herniation, central spinal stenosis, or nerve root impingement.\n3. Normal termination and signal of the conus medullaris and cauda equina."
+  },
+  {
+    "id": "mri-brachial-plexus",
+    "name": "MRI Brachial Plexus",
+    "modality": "MRI",
+    "subspecialty": "Neuroradiology",
+    "subtitle": "MRI BRACHIAL PLEXUS PROTOCOL",
+    "description": "High-resolution targeted multiplanar MRI of the bilateral brachial plexuses.",
+    "technique": "Coronal T1W, Coronal STIR/T2 Dixon, Sagittal T1W, Sagittal T2W, and Axial T2W from C4 through T2.",
+    "normalFindings": [
+      "Spinal roots (C5 through T1) exit neural foramina symmetrically with smooth contours and normal signal.",
+      "Trunks (upper, middle, lower) within interscalene triangle demonstrate normal caliber without thickening or hyperintensity.",
+      "Divisions, cords, and terminal branches within costoclavicular and retropectoral spaces appear symmetrical and unremarkable.",
+      "Cervical cord is normal; no nerve root avulsion, pseudomeningocele, or intradural abnormality.",
+      "Scalene musculature is symmetric; no fibrous band or cervical rib. Subclavian vessels are patent."
+    ],
+    "defaultImpression": "1. Normal MRI appearance of the bilateral brachial plexuses.\n2. No evidence of nerve root avulsion, pseudomeningocele, plexopathy, or perineural mass lesion.\n3. Intact interscalene and costoclavicular spaces without neurovascular entrapment."
+  },
+  {
+    "id": "mri-orbits",
+    "name": "MRI Orbits (Contrast-Enhanced)",
+    "modality": "MRI",
+    "subspecialty": "Head & Neck",
+    "subtitle": "MRI ORBITS WITH CONTRAST",
+    "description": "High-resolution multiplanar orbital MRI with fat-suppression and contrast.",
+    "technique": "Axial/Coronal T1W, T2W Fat-Suppressed, DWI/ADC, and dynamic post-contrast T1W Fat-Suppressed thin slices through orbits.",
+    "normalFindings": [
+      "Both globes are symmetric with normal morphology and signal intensity without intraocular mass or retinal detachment.",
+      "Bilateral optic nerve-sheath complexes demonstrate uniform caliber and normal T2 signal without hyperintensity or sheath distension.",
+      "No restricted diffusion on DWI/ADC or abnormal post-contrast optic nerve enhancement (no optic neuritis).",
+      "Superior, inferior, medial, and lateral recti and obliques demonstrate normal bulk, symmetric signal, and normal enhancement.",
+      "Intraconal and extraconal fat planes are preserved without infiltration or pseudotumor. Bilateral lacrimal glands are normal."
+    ],
+    "defaultImpression": "1. Normal contrast-enhanced MRI orbits bilaterally.\n2. No evidence of optic neuritis, orbital inflammatory disease, or intraocular/retrobulbar mass lesion.\n3. Normal extraocular muscles and preserved orbital fat planes."
+  },
+  {
+    "id": "mri-neck-soft-tissue",
+    "name": "MRI Neck (Soft Tissue & Cervical Viscera)",
+    "modality": "MRI",
+    "subspecialty": "Head & Neck",
+    "subtitle": "MRI SOFT TISSUE NECK",
+    "description": "Multiplanar MRI of suprahyoid and infrahyoid spaces, pharynx, and larynx.",
+    "technique": "Axial T1W, Axial T2W Fat-Suppressed, Coronal STIR, Coronal T1W, DWI/ADC, and post-contrast T1W Fat-Suppressed sequences.",
+    "normalFindings": [
+      "Pharyngeal mucosal space, parapharyngeal, masticator, and retropharyngeal spaces demonstrate normal fat planes without mass.",
+      "Larynx, hypopharynx, vocal cords, and pyriform fossae are symmetric without mucosal lesion; airway is central and patent.",
+      "Parotid, submandibular, and thyroid glands demonstrate normal size, signal characteristics, and homogeneous enhancement.",
+      "No pathologically enlarged, necrotic, or matted cervical or supraclavicular lymph nodes.",
+      "Carotid arteries and internal jugular veins demonstrate normal caliber and preserved flow voids bilaterally."
+    ],
+    "defaultImpression": "1. Normal MRI examination of the deep facial and neck soft tissue spaces.\n2. No mucosal mass, deep facial space collection, or pathological enhancement.\n3. No pathologically enlarged or necrotic cervical lymphadenopathy."
+  },
+  {
+    "id": "mri-pns",
+    "name": "MRI Paranasal Sinuses & Skull Base",
+    "modality": "MRI",
+    "subspecialty": "Head & Neck",
+    "subtitle": "MRI PNS & SKULL BASE",
+    "description": "High-resolution multiplanar MRI of sinonasal cavities and anterior skull base.",
+    "technique": "Axial T1W, Axial T2W, Coronal T2W Fat-Suppressed, Sagittal T1W, DWI/ADC, and post-contrast T1W Fat-Suppressed images.",
+    "normalFindings": [
+      "Frontal, maxillary, ethmoidal, and sphenoid sinuses demonstrate normal mucosal lining without thickening, mass, or fluid signal.",
+      "Osteomeatal complexes are patent. Cribriform plates, fovea ethmoidalis, and planum sphenoidale demonstrate preserved signal without erosion.",
+      "Nasal septum is midline; bilateral turbinates and nasopharynx are symmetrical without soft tissue lesion.",
+      "Visualized orbits, pterygopalatine fossae, and infratemporal fossae demonstrate intact fat planes without infiltration."
+    ],
+    "defaultImpression": "1. Clear paranasal sinuses bilaterally without acute or chronic sinonasal inflammatory disease.\n2. Intact anterior skull base with no bony erosion or sinonasal mass lesion."
+  },
+  {
+    "id": "mri-temporal-iac",
+    "name": "MRI Temporal Bones & Internal Auditory Canals (IAC)",
+    "modality": "MRI",
+    "subspecialty": "Head & Neck",
+    "subtitle": "MRI IAC / CPA CISS PROTOCOL",
+    "description": "Ultra-thin 3D steady-state MRI of cerebellopontine angles and cranial nerves VII/VIII.",
+    "technique": "Sub-millimeter 3D T2W steady-state (CISS / FIESTA), Axial T1W, Axial T2W, and post-contrast thin-section T1W Fat-Suppressed.",
+    "normalFindings": [
+      "Cerebellopontine angle (CPA) cisterns are symmetric, patent, and clear of mass, cyst, or arachnoid web.",
+      "Internal auditory canals (IACs) are symmetric with normal caliber. Cranial nerves VII and VIII traverse normally without nodularity or enhancement.",
+      "Specifically, no evidence of vestibular schwannoma (acoustic neuroma) or facial nerve schwannoma.",
+      "Membranous labyrinth (cochlea, vestibule, semicircular canals) demonstrates intact fluid signal without labyrinthitis ossificans.",
+      "Brainstem and cerebellar hemispheres demonstrate normal signal without mass effect. Mastoids are clear."
+    ],
+    "defaultImpression": "1. Normal MRI of the internal auditory canals and cerebellopontine angles.\n2. Intact cranial nerve VII and VIII complexes bilaterally without vestibular schwannoma or pathological enhancement.\n3. Normal fluid signal within the membranous labyrinths."
+  },
+  {
+    "id": "mri-face",
+    "name": "MRI Face & Masticator Spaces",
+    "modality": "MRI",
+    "subspecialty": "Head & Neck",
+    "subtitle": "MRI FACE & TMJ",
+    "description": "Multiplanar MRI of masticator muscles, buccal space, and temporomandibular joints.",
+    "technique": "Axial T1W, Axial T2W Fat-Suppressed, Coronal STIR, Coronal T1W, and post-contrast Fat-Suppressed T1W imaging.",
+    "normalFindings": [
+      "Bilateral masseter, temporalis, medial and lateral pterygoid muscles demonstrate symmetric bulk and signal without intramuscular mass.",
+      "Bilateral mandibular condyles demonstrate normal morphology within glenoid fossae; TMJ articular discs are normally positioned.",
+      "Buccal space, parapharyngeal space, and retropharyngeal space demonstrate preserved fat planes without mass or collection.",
+      "Parotid and submandibular glands are symmetrical and unremarkable. Maxilla and mandible show normal bone marrow signal."
+    ],
+    "defaultImpression": "1. Normal MRI appearance of the facial musculature and deep facial spaces.\n2. No mass lesion, abscess, or pathological enhancement in the masticator or buccal spaces.\n3. Symmetrically congruent temporomandibular joints and intact facial skeleton."
+  },
+  {
+    "id": "mri-shoulder",
+    "name": "MRI Shoulder Joint",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI SHOULDER PROTOCOL",
+    "description": "High-resolution multiplanar MRI of the shoulder joint and rotator cuff.",
+    "technique": "Coronal Oblique T1W, Coronal Oblique T2W Fat-Suppressed, Sagittal Oblique T2W Fat-Suppressed, Axial T2W FS, and Axial PD.",
+    "normalFindings": [
+      "Rotator cuff tendons (supraspinatus, infraspinatus, subscapularis, teres minor) are intact with normal signal and footprint insertion.",
+      "Rotator cuff musculature demonstrates normal bulk without fatty infiltration, atrophy, or edema.",
+      "Long head of the biceps tendon is normally seated in the bicipital groove with intact superior labral attachment.",
+      "Glenoid labrum is intact throughout without tear, SLAP lesion, or detachment. Glenohumeral cartilage is preserved.",
+      "Acromioclavicular joint and subacromial-subdeltoid bursa are unremarkable. Humeral head shows normal marrow signal."
+    ],
+    "defaultImpression": "1. Intact rotator cuff tendons and musculature without tendinosis, tear, or muscle atrophy.\n2. Intact glenoid labrum and biceps tendon anchor.\n3. No glenohumeral joint effusion, chondral defect, or occult osseous fracture."
+  },
+  {
+    "id": "mri-elbow",
+    "name": "MRI Elbow Joint",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI ELBOW PROTOCOL",
+    "description": "Dedicated multiplanar MRI of the elbow joint, collateral ligaments, and tendons.",
+    "technique": "Sagittal T1W, Sagittal T2W Fat-Suppressed, Coronal T1W, Coronal T2W Fat-Suppressed, and Axial PD Fat-Suppressed.",
+    "normalFindings": [
+      "Distal biceps tendon and triceps tendon insert normally onto radial tuberosity and olecranon without tear.",
+      "Common flexor and common extensor tendon origins are intact without tendinosis, partial tear, or epicondylitis.",
+      "Ulnar collateral ligament and lateral collateral ligament complexes are intact with preserved low signal.",
+      "Radiocapitellar and ulnohumeral joint spaces demonstrate preserved cartilage without joint effusion or loose bodies.",
+      "Bones demonstrate normal marrow signal without osteochondral lesion. Cubital tunnel and ulnar nerve are normal."
+    ],
+    "defaultImpression": "1. Intact distal biceps and triceps tendons.\n2. Intact medial and lateral collateral ligament complexes with no epicondylitis.\n3. No joint effusion, chondral defect, or occult osseous fracture."
+  },
+  {
+    "id": "mri-wrist",
+    "name": "MRI Wrist Joint",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI WRIST PROTOCOL",
+    "description": "High-resolution multiplanar wrist MRI for TFCC, carpal ligaments, and tendons.",
+    "technique": "Coronal T1W, Coronal T2W Fat-Suppressed, Coronal PD, Axial T2W Fat-Suppressed, and Sagittal T2W sequences.",
+    "normalFindings": [
+      "Triangular fibrocartilage complex (TFCC) articular disc and radioulnar ligaments are intact without perforation or tear.",
+      "Scapholunate (SLL) and lunotriquetral (LTL) intrinsic ligaments are intact with preserved carpal alignment.",
+      "Radiocarpal and midcarpal joint spaces are preserved without chondral defect, effusion, or carpal marrow edema.",
+      "Carpal tunnel is widely patent; flexor tendons and median nerve demonstrate normal caliber and signal.",
+      "Extensor tendon compartments (I-VI) are intact with preserved tendon sheaths. No ganglion cyst or mass."
+    ],
+    "defaultImpression": "1. Intact triangular fibrocartilage complex (TFCC) without tear.\n2. Intact scapholunate and lunotriquetral intrinsic carpal ligaments.\n3. No carpal bone marrow edema, osteonecrosis, or tenosynovitis."
+  },
+  {
+    "id": "mri-hip",
+    "name": "MRI Hip Joint",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI HIP PROTOCOL",
+    "description": "High-resolution multiplanar MRI of hip joint, acetabular labrum, and abductor tendons.",
+    "technique": "Coronal T1W, Coronal T2W Fat-Suppressed, Axial Oblique T2W Fat-Suppressed, Sagittal T2W, and Coronal STIR.",
+    "normalFindings": [
+      "Femoral head is spherical and congruently seated within the acetabulum with normal marrow signal; no avascular necrosis (AVN).",
+      "Acetabular labrum is intact without tear, detachment, or paralabral cyst. Articular cartilage is preserved.",
+      "No significant hip joint effusion or synovitis. Joint capsule and iliofemoral ligament are intact.",
+      "Gluteus medius and minimus tendons insert normally onto the greater trochanter without tendinopathy or tear.",
+      "Iliopsoas, piriformis, and obturator musculature are intact. Trochanteric bursa is unremarkable."
+    ],
+    "defaultImpression": "1. No evidence of avascular necrosis (AVN), subchondral fracture, or bone marrow edema of the femoral head.\n2. Intact acetabular labrum without tear or paralabral cyst.\n3. Intact abductor tendon insertions and normal joint spaces without effusion."
+  },
+  {
+    "id": "mri-knee",
+    "name": "MRI Knee Joint",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI KNEE PROTOCOL",
+    "description": "High-resolution multiplanar knee MRI for menisci, cruciate ligaments, and articular cartilage.",
+    "technique": "Sagittal T1W, Sagittal T2W Fat-Suppressed, Coronal T2W Fat-Suppressed, Coronal PD, and Axial PD Fat-Suppressed.",
+    "normalFindings": [
+      "Medial and lateral menisci demonstrate normal triangular morphology and low signal without tear, root defect, or extrusion.",
+      "Anterior cruciate ligament (ACL) and posterior cruciate ligament (PCL) are intact with taut fibers and normal signal.",
+      "Medial collateral ligament (MCL) complex and lateral collateral ligament (LCL) / posterolateral corner are intact.",
+      "Patellofemoral and femorotibial compartments demonstrate uniform cartilage thickness without chondral defect or loose body.",
+      "No significant joint effusion. Quadriceps and patellar tendons are intact. Distal femur and proximal tibia show normal marrow."
+    ],
+    "defaultImpression": "1. Intact medial and lateral menisci without tear or extrusion.\n2. Intact cruciate (ACL, PCL) and collateral (MCL, LCL) ligaments.\n3. Preserved articular cartilage throughout with no significant joint effusion or bone marrow contusion."
+  },
+  {
+    "id": "mri-ankle",
+    "name": "MRI Ankle Joint",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI ANKLE PROTOCOL",
+    "description": "Multiplanar MRI of the ankle joint, ligaments, tendons, and syndesmosis.",
+    "technique": "Sagittal T1W, Sagittal T2W Fat-Suppressed, Coronal PD Fat-Suppressed, Coronal T1W, and Axial T2W Fat-Suppressed.",
+    "normalFindings": [
+      "Lateral collateral ligaments (ATFL, CFL, PTFL) and medial deltoid ligament complex are intact.",
+      "Achilles tendon demonstrates normal caliber, smooth contours, and uniform low signal without tendinosis or tear.",
+      "Plantar fascia is intact with normal thickness at calcaneal insertion. Peroneal, flexor, and extensor tendons are intact.",
+      "Tibiotalar and subtalar joint spaces are preserved with smooth cartilage. No osteochondral defect of the talar dome.",
+      "Distal tibia, fibula, talus, and calcaneus demonstrate normal bone marrow signal without edema or fracture."
+    ],
+    "defaultImpression": "1. Intact lateral collateral and deltoid ligament complexes.\n2. Normal Achilles tendon and plantar fascia without tendinopathy or tear.\n3. No talar dome osteochondral defect, bone marrow edema, or joint effusion."
+  },
+  {
+    "id": "mri-foot",
+    "name": "MRI Foot & Midfoot",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI FOOT PROTOCOL",
+    "description": "Targeted multiplanar MRI of midfoot and forefoot for Lisfranc complex and metatarsals.",
+    "technique": "Sagittal T1W, Sagittal T2W Fat-Suppressed, Short-Axis T1W, Short-Axis PD Fat-Suppressed, and Long-Axis T2W.",
+    "normalFindings": [
+      "Tarsal bones and metatarsals demonstrate normal marrow signal without stress fracture, marrow edema, or osteonecrosis.",
+      "Dorsal, interosseous, and plantar Lisfranc ligaments are intact without disruption, diastasis, or subluxation.",
+      "Plantar fascia cords and intrinsic plantar musculature are intact without fascial thickening or edema.",
+      "Peroneal and tibial tendons are intact. Intermetatarsal spaces demonstrate normal fat planes without Morton neuroma."
+    ],
+    "defaultImpression": "1. Normal MRI of the foot with intact Lisfranc ligamentous complex.\n2. No occult stress fracture, bone marrow edema, or avascular necrosis.\n3. Intact plantar fascia with no evidence of intermetatarsal neuroma."
+  },
+  {
+    "id": "mri-si-joints",
+    "name": "MRI Sacroiliac Joints (Sacroiliitis Protocol)",
+    "modality": "MRI",
+    "subspecialty": "Musculoskeletal",
+    "subtitle": "MRI SACROILIITIS PROTOCOL",
+    "description": "Semicoronal and semiaxial MRI for active inflammatory and structural sacroiliitis (ASAS criteria).",
+    "technique": "Semicoronal T1W, Semicoronal STIR / T2 Fat-Suppressed, Semiaxial STIR, and Semicoronal post-contrast T1W Fat-Suppressed.",
+    "normalFindings": [
+      "Bilateral sacral and iliac subchondral bone marrow demonstrates uniform normal signal intensity.",
+      "No subchondral bone marrow edema on STIR sequences to suggest active sacroiliitis (ASAS criteria negative).",
+      "Subchondral cortical plates are smooth and intact; no subchondral sclerosis, erosions, fat metaplasia, or ankylosis.",
+      "Sacroiliac joint spaces are symmetric and anatomical without joint effusion or capsulitis.",
+      "Surrounding musculature and presacral spaces demonstrate normal appearance without collection or abscess."
+    ],
+    "defaultImpression": "1. Normal MRI appearance of the bilateral sacroiliac joints.\n2. No active sacroiliitis (no subchondral marrow edema on STIR; ASAS criteria negative).\n3. No chronic structural damage, erosion, fat metaplasia, or ankylosis."
+  },
+  {
+    "id": "mri-abdomen-pelvis",
+    "name": "MRI Abdomen & Pelvis (Multiparametric)",
+    "modality": "MRI",
+    "subspecialty": "Abdominal",
+    "subtitle": "MRI ABDOMEN & PELVIS DYNAMIC",
+    "description": "Multiparametric MRI of abdomen and pelvis with dynamic post-contrast sequences.",
+    "technique": "Axial/Coronal T2W HASTE, In/Out-of-Phase Dual-Echo T1W, Axial DWI/ADC, and dynamic 3D T1W Fat-Suppressed post-contrast.",
+    "normalFindings": [
+      "Liver demonstrates normal size, contour, and signal without intracellular lipid dropout or focal parenchymal lesion.",
+      "Biliary tree is non-dilated. Gallbladder is well-distended without wall thickening or stone voids. Portal veins are patent.",
+      "Spleen, pancreas, and adrenal glands demonstrate normal signal and enhancement without focal mass.",
+      "Kidneys demonstrate normal corticomedullary differentiation without focal lesion, hydronephrosis, or perinephric collection.",
+      "No ascites, loculated collection, or pathological retroperitoneal/pelvic lymphadenopathy.",
+      "Visualized pelvic viscera and bowel loops demonstrate normal caliber and wall thickness."
+    ],
+    "defaultImpression": "1. Normal multiparametric MRI of the abdomen and pelvis.\n2. No focal solid organ mass, pathological diffusion restriction, or abnormal enhancement.\n3. No biliary dilatation, hydronephrosis, or ascites."
+  },
+  {
+    "id": "mrcp",
+    "name": "MRCP (Magnetic Resonance Cholangiopancreatography)",
+    "modality": "MRI",
+    "subspecialty": "Abdominal",
+    "subtitle": "MRCP BILIARY PROTOCOL",
+    "description": "Targeted non-contrast MR cholangiopancreatography with 3D thick-slab and thin-slice T2.",
+    "technique": "Thin-slice 2D Coronal/Axial Breath-hold T2W, thick-slab 3D MRCP radial projections, and high-resolution 3D T2W MIP.",
+    "normalFindings": [
+      "Right and left hepatic ducts and secondary intrahepatic biliary radicles demonstrate normal caliber and smooth branching.",
+      "Common hepatic duct and common bile duct (CBD) are normal in course and caliber with smooth tapering toward the ampulla.",
+      "No choledocholithiasis (signal voids), biliary stricture, abrupt cutoff, or intraductal mass lesion identified.",
+      "Gallbladder is distended with thin walls; cystic duct is patent with normal insertion into the common hepatic duct.",
+      "Main pancreatic duct (duct of Wirsung) demonstrates uniform caliber (<3 mm) without dilatation or side-branch ectasia."
+    ],
+    "defaultImpression": "1. Normal MRCP with non-dilated intra- and extrahepatic biliary channels and main pancreatic duct.\n2. No choledocholithiasis, cholelithiasis, biliary stricture, or filling defect."
+  },
+  {
+    "id": "mre-enterography",
+    "name": "MR Enterography (Small Bowel IBD Protocol)",
+    "modality": "MRI",
+    "subspecialty": "Abdominal",
+    "subtitle": "MR ENTEROGRAPHY CROHN PROTOCOL",
+    "description": "Dedicated biphasic oral contrast small bowel MRI for Crohn disease and enteritis.",
+    "technique": "Multiplanar Coronal/Axial TrueFISP, T2W Fat-Suppressed, DWI/ADC, and dynamic post-contrast T1W after 1500 mL biphasic oral solution.",
+    "normalFindings": [
+      "Satisfactory luminal distension achieved throughout the jejunum, ileum, and terminal ileum without segment collapse.",
+      "Small bowel loops demonstrate normal wall thickness (<3 mm) without mural hyperintensity, diffusion restriction, or hyperenhancement.",
+      "Terminal ileum is widely patent with normal supple folds and wall thickness. Ileocecal valve is anatomically normal.",
+      "Mesenteric fat planes are clean without fibrofatty proliferation (comb sign), engorged vasa recta, sinus tract, fistula, or abscess.",
+      "No pathologically enlarged mesenteric lymph nodes or pelvic collections."
+    ],
+    "defaultImpression": "1. Normal MR Enterography with uniform small bowel distension.\n2. No features of active Crohn disease, mural thickening, ulceration, stricture, or pre-stenotic dilatation.\n3. No extramural fistula or intra-abdominal collection."
+  },
+  {
+    "id": "mri-pelvis",
+    "name": "MRI Pelvis (High-Resolution Gynecologic / Prostatic)",
+    "modality": "MRI",
+    "subspecialty": "Abdominal",
+    "subtitle": "MRI PELVIS PROTOCOL",
+    "description": "High-resolution multiplanar pelvic MRI with DWI/ADC and dynamic contrast enhancement.",
+    "technique": "Sagittal T2W, Axial T2W, Coronal T2W, Axial T1W, High-b-value DWI/ADC, and dynamic multiphase DCE T1W Fat-Suppressed.",
+    "normalFindings": [
+      "Urinary bladder and rectum demonstrate normal wall thickness and smooth contours without mural lesion or invasion.",
+      "Reproductive anatomy demonstrates age-appropriate morphology and signal without focal mass or pathological enhancement.",
+      "Endometrium/junctional zone (female) or prostatic zonal anatomy (male) demonstrate intact architecture.",
+      "Pelvic sidewalls, obturator spaces, and levator ani musculature demonstrate preserved fat planes.",
+      "No pathologically enlarged pelvic or inguinal lymph nodes; no free fluid or peritoneal deposit."
+    ],
+    "defaultImpression": "1. Normal high-resolution MRI of the pelvis without focal organ mass, pathological enhancement, or restricted diffusion.\n2. Unremarkable pelvic visceral and reproductive structures.\n3. No pelvic lymphadenopathy or free fluid."
+  },
+  {
+    "id": "mri-fistulogram",
+    "name": "MRI Perianal Fistula (Fistulogram)",
+    "modality": "MRI",
+    "subspecialty": "Abdominal",
+    "subtitle": "MRI PERIANAL FISTULA / PARKS",
+    "description": "Targeted high-resolution MRI of anal sphincters and perianal spaces for fistula in ano.",
+    "technique": "High-resolution thin-section Sagittal T2, Oblique Coronal T2, Oblique Axial T2, Axial STIR, and post-contrast Fat-Suppressed T1W.",
+    "normalFindings": [
+      "Internal anal sphincter (IAS) and external anal sphincter (EAS) complexes are intact, symmetric, and uniform in signal throughout.",
+      "The intersphincteric plane is sharp and preserved bilaterally without tract-like hyperintensity.",
+      "No fluid-filled, hyperintense T2, or enhancing tract-like lesion in the perianal region, intersphincteric space, or ischioanal fossa.",
+      "No primary internal opening along the dentate line or external cutaneous opening in the perineum.",
+      "Ischioanal and ischiorectal fossae demonstrate homogeneous fat signal without abscess, fluid collection, or inflammatory stranding."
+    ],
+    "defaultImpression": "1. Normal MRI perianal fistulogram.\n2. No evidence of perianal fistula, sinus tract, or branching secondary extension (Parks: No fistula).\n3. No perianal or ischioanal abscess; intact internal and external sphincter complexes."
+  },
+  {
+    "id": "mri-breast-bilateral",
+    "name": "MRI Bilateral Breast (Dynamic Contrast-Enhanced)",
+    "modality": "MRI",
+    "subspecialty": "Thoracic",
+    "subtitle": "MRI BILATERAL BREAST DCE",
+    "description": "High-resolution dynamic contrast-enhanced bilateral breast MRI with kinetic analysis.",
+    "technique": "Axial T2W FS, Axial DWI/ADC, Sagittal T1W, and multiphase 3D T1W DCE (pre- and 5 post-contrast phases) with automated subtraction.",
+    "normalFindings": [
+      "Symmetrical fibroglandular tissue distribution with minimal/mild background parenchymal enhancement (BPE).",
+      "Right and left breasts demonstrate no suspicious enhancing mass, non-mass enhancement (NME), or architectural distortion.",
+      "Kinetic curves demonstrate normal, progressive persistent (Type 1) enhancement without rapid washout.",
+      "Nipple-areolar complexes and skin are normal in thickness without retraction. Retromammary fat planes are intact.",
+      "Bilateral axillary lymph nodes demonstrate normal reniform morphology with preserved fatty hila; no adenopathy."
+    ],
+    "defaultImpression": "1. Bilateral breast MRI demonstrating no suspicious enhancing mass, non-mass enhancement, or architectural distortion (BI-RADS Category 1: Negative).\n2. Symmetrical lymph nodes with no suspicious axillary adenopathy."
+  }
+]

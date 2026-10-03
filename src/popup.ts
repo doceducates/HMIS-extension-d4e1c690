@@ -72,6 +72,25 @@ const queueList          = document.getElementById('queue-list')!;
 const queueStatusText    = document.getElementById('queue-status-text')!;
 const queueCountBadge    = document.getElementById('queue-count-badge')!;
 
+// Radiology Workstation elements
+const radiologyToggle     = document.getElementById('radiology-toggle')!;
+const radiologyView       = document.getElementById('radiology-view')!;
+const radBackBtn          = document.getElementById('rad-back-btn')!;
+const radRefreshBtn       = document.getElementById('rad-refresh-btn')!;
+const radPatientName      = document.getElementById('rad-patient-name')!;
+const radPatientMeta      = document.getElementById('rad-patient-meta')!;
+const radModalStatus      = document.getElementById('rad-modal-status')!;
+const radAgeGender        = document.getElementById('rad-age-gender')!;
+const radCnic             = document.getElementById('rad-cnic')!;
+const radModuleSelect     = document.getElementById('rad-module-select') as HTMLSelectElement;
+const radFetchHistoryBtn  = document.getElementById('rad-fetch-history-btn')!;
+const radHistoryList      = document.getElementById('rad-history-list')!;
+const radStageBtn         = document.getElementById('rad-stage-btn')!;
+const radSaveDraftBtn     = document.getElementById('rad-save-draft-btn')!;
+const radSubmitBtn        = document.getElementById('rad-submit-btn')!;
+const radPacsBtn          = document.getElementById('rad-pacs-btn')!;
+const radRejectBtn        = document.getElementById('rad-reject-btn')!;
+
 // Settings elements
 const usernameInput           = document.getElementById('username') as HTMLInputElement;
 const passwordInput           = document.getElementById('password') as HTMLInputElement;
@@ -191,11 +210,13 @@ function showSettings() {
     aboutView.classList.add('hidden');
     recordsView.classList.add('hidden');
     queueView.classList.add('hidden');
+    radiologyView.classList.add('hidden');
     settingsView.classList.remove('hidden');
     settingsToggle.classList.add('active');
     aboutToggle.classList.remove('active');
     recordsToggle.classList.remove('active');
     queueToggle.classList.remove('active');
+    radiologyToggle.classList.remove('active');
 }
 
 function showDashboard() {
@@ -203,11 +224,13 @@ function showDashboard() {
     aboutView.classList.add('hidden');
     recordsView.classList.add('hidden');
     queueView.classList.add('hidden');
+    radiologyView.classList.add('hidden');
     dashboardView.classList.remove('hidden');
     settingsToggle.classList.remove('active');
     aboutToggle.classList.remove('active');
     recordsToggle.classList.remove('active');
     queueToggle.classList.remove('active');
+    radiologyToggle.classList.remove('active');
 }
 
 function showAbout() {
@@ -215,11 +238,13 @@ function showAbout() {
     settingsView.classList.add('hidden');
     recordsView.classList.add('hidden');
     queueView.classList.add('hidden');
+    radiologyView.classList.add('hidden');
     aboutView.classList.remove('hidden');
     aboutToggle.classList.add('active');
     settingsToggle.classList.remove('active');
     recordsToggle.classList.remove('active');
     queueToggle.classList.remove('active');
+    radiologyToggle.classList.remove('active');
 }
 
 function showRecords() {
@@ -227,11 +252,13 @@ function showRecords() {
     settingsView.classList.add('hidden');
     aboutView.classList.add('hidden');
     queueView.classList.add('hidden');
+    radiologyView.classList.add('hidden');
     recordsView.classList.remove('hidden');
     recordsToggle.classList.add('active');
     settingsToggle.classList.remove('active');
     aboutToggle.classList.remove('active');
     queueToggle.classList.remove('active');
+    radiologyToggle.classList.remove('active');
     loadAndRenderRecords();
 }
 
@@ -240,12 +267,68 @@ function showQueue() {
     settingsView.classList.add('hidden');
     aboutView.classList.add('hidden');
     recordsView.classList.add('hidden');
+    radiologyView.classList.add('hidden');
     queueView.classList.remove('hidden');
     queueToggle.classList.add('active');
     recordsToggle.classList.remove('active');
     settingsToggle.classList.remove('active');
     aboutToggle.classList.remove('active');
+    radiologyToggle.classList.remove('active');
     loadLiveQueue();
+}
+
+function showRadiology() {
+    dashboardView.classList.add('hidden');
+    settingsView.classList.add('hidden');
+    aboutView.classList.add('hidden');
+    recordsView.classList.add('hidden');
+    queueView.classList.add('hidden');
+    radiologyView.classList.remove('hidden');
+    radiologyToggle.classList.add('active');
+    queueToggle.classList.remove('active');
+    recordsToggle.classList.remove('active');
+    settingsToggle.classList.remove('active');
+    aboutToggle.classList.remove('active');
+    loadActiveInvestigation();
+}
+
+let currentInvestigation: any = null;
+
+function loadActiveInvestigation() {
+    radPatientName.textContent = 'Scanning HMIS Form...';
+    radModalStatus.textContent = 'Detecting';
+    radModalStatus.style.color = 'var(--text-muted)';
+
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        if (!tabs[0]?.id) return;
+        chrome.tabs.sendMessage(tabs[0].id, { action: 'GET_CURRENT_INVESTIGATION' }, (response) => {
+            if (response?.data) {
+                currentInvestigation = response.data;
+                const inv = response.data;
+                if (inv.isModalOpen || inv.patientName || inv.mrn) {
+                    radPatientName.textContent = inv.patientName || 'Patient Detected';
+                    radPatientMeta.textContent = `MRN: ${inv.mrn || '--'} | Inv ID: ${inv.investigationId || '--'}`;
+                    radModalStatus.textContent = inv.isModalOpen ? 'Modal Active' : 'Page Active';
+                    radModalStatus.style.color = 'var(--success)';
+                    radAgeGender.textContent = `Age/Sex: ${inv.age || '--'} / ${inv.gender || '--'}`;
+                    radCnic.textContent = `CNIC: ${inv.cnic || '--'}`;
+                    if (inv.moduleId) {
+                        radModuleSelect.value = inv.moduleId;
+                    }
+                } else {
+                    radPatientName.textContent = 'No Reporting Form Open';
+                    radPatientMeta.textContent = 'Open an "Add Result" modal on HMIS portal.';
+                    radModalStatus.textContent = 'Modal Closed';
+                    radModalStatus.style.color = 'var(--warning)';
+                }
+            } else {
+                radPatientName.textContent = 'HMIS Not Active';
+                radPatientMeta.textContent = 'Navigate to hmis.punjab.gov.pk.';
+                radModalStatus.textContent = 'Disconnected';
+                radModalStatus.style.color = 'var(--danger)';
+            }
+        });
+    });
 }
 
 // ═══════════════════════════════════════════
@@ -724,10 +807,113 @@ function bindEvents() {
         }
     });
 
+    radiologyToggle.addEventListener('click', () => {
+        if (radiologyView.classList.contains('hidden')) {
+            showRadiology();
+        } else {
+            showDashboard();
+        }
+    });
+
+    radBackBtn.addEventListener('click', showDashboard);
+
+    radRefreshBtn.addEventListener('click', () => {
+        loadActiveInvestigation();
+    });
+
+    radModuleSelect.addEventListener('change', () => {
+        if (!radModuleSelect.value) return;
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs[0]?.id) return;
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'SET_MODULE_ID',
+                moduleId: radModuleSelect.value
+            });
+        });
+    });
+
+    radFetchHistoryBtn.addEventListener('click', () => {
+        radFetchHistoryBtn.textContent = 'Fetching...';
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs[0]?.id) return;
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'GET_PATIENT_HISTORY',
+                investigationId: currentInvestigation?.investigationId
+            }, (res) => {
+                radFetchHistoryBtn.textContent = 'Fetch History';
+                if (res?.data && res.data.length > 0) {
+                    radHistoryList.innerHTML = '';
+                    res.data.forEach((r: any) => {
+                        const item = document.createElement('div');
+                        item.style.cssText = 'background:var(--bg-input); border:1px solid var(--border); border-radius:4px; padding:4px 6px;';
+                        item.innerHTML = `<strong>${r.testName}</strong> <span style="font-size:9px; color:var(--text-dim);">(${r.date || ''})</span><br><span style="color:var(--accent);">${r.department}</span> - ${r.resultSummary || r.status || ''}`;
+                        radHistoryList.appendChild(item);
+                    });
+                } else {
+                    radHistoryList.innerHTML = '<div style="text-align:center; padding:8px; color:var(--text-dim);">No prior pathology or radiology reports found.</div>';
+                }
+            });
+        });
+    });
+
+    radSaveDraftBtn.addEventListener('click', () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs[0]?.id) return;
+            chrome.tabs.sendMessage(tabs[0].id, { action: 'TRIGGER_SAVE_DRAFT' });
+        });
+    });
+
+    radSubmitBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to finalize and legally submit this report to HMIS?')) {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (!tabs[0]?.id) return;
+                chrome.tabs.sendMessage(tabs[0].id, { action: 'TRIGGER_SUBMIT_FINAL' });
+            });
+        }
+    });
+
+    radPacsBtn.addEventListener('click', () => {
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            if (!tabs[0]?.id) return;
+            chrome.tabs.sendMessage(tabs[0].id, {
+                action: 'TRIGGER_PATIENT_STUDIES',
+                studyId: currentInvestigation?.studyId || currentInvestigation?.mrn
+            });
+        });
+    });
+
+    radRejectBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to reject this investigation?')) {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (!tabs[0]?.id) return;
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: 'TRIGGER_REJECT_INVESTIGATION',
+                    investigationId: currentInvestigation?.investigationId
+                });
+            });
+        }
+    });
+
+    radStageBtn.addEventListener('click', async () => {
+        const staged = await chrome.storage.session.get('stagedRadiologyReport');
+        if (staged?.stagedRadiologyReport) {
+            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+                if (!tabs[0]?.id) return;
+                chrome.tabs.sendMessage(tabs[0].id, {
+                    action: 'FILL_RADIOLOGY_REPORT',
+                    payload: staged.stagedRadiologyReport
+                });
+            });
+        } else {
+            alert('No report staged from Rad Suite yet. Open a study in Rad Suite and click Stage Report.');
+        }
+    });
+
     backBtn.addEventListener('click', showDashboard);
     aboutBackBtn.addEventListener('click', showDashboard);
     recordsBackBtn.addEventListener('click', showDashboard);
     queueBackBtn.addEventListener('click', showDashboard);
+    radBackBtn.addEventListener('click', showDashboard);
     footerAboutLink.addEventListener('click', showAbout);
 
     refreshQueueBtn.addEventListener('click', () => {

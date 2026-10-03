@@ -858,7 +858,7 @@
       white-space: nowrap;
     }
   </style>
-  <script type="module" crossorigin src="/assets/popup.html-E1d4R2xr.js"></script>
+  <script type="module" crossorigin src="/assets/popup.html-Dp62h3qF.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-B5Qt9EMX.js">
   <link rel="modulepreload" crossorigin href="/assets/ai-engine-sKICGBjt.js">
 </head>
@@ -880,6 +880,7 @@
         <span class="dot"></span>
         <span id="status-pill-text">Idle</span>
       </div>
+      <button id="radiology-toggle" class="icon-btn" title="Radiology Reporting Workstation">🩻</button>
       <button id="queue-toggle" class="icon-btn" title="Live Queue">👥</button>
       <button id="records-toggle" class="icon-btn" title="Records">📊</button>
       <button id="about-toggle" class="icon-btn" title="About">ℹ</button>
@@ -959,6 +960,104 @@
       <div class="feed-empty">
         <span class="empty-icon">👥</span>
         <span>Loading queue...</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ RADIOLOGY WORKSTATION VIEW ═══════ -->
+  <div id="radiology-view" class="view hidden">
+    <div class="settings-header">
+      <button id="rad-back-btn" class="back-btn" title="Back to Dashboard">←</button>
+      <span class="settings-title">🩻 Radiology Workstation</span>
+      <button id="rad-refresh-btn" class="icon-btn" style="margin-left: auto; width: 28px; height: 28px; font-size: 14px;" title="Detect Active Patient Form">🔄</button>
+    </div>
+
+    <!-- Active Patient Investigation Card -->
+    <div class="card" style="padding: 10px; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 6px;">
+        <div>
+          <div id="rad-patient-name" style="font-weight: 700; font-size: 13px; color: var(--text);">No Patient Form Detected</div>
+          <div id="rad-patient-meta" style="font-size: 10px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 2px;">
+            MRN: -- | Inv ID: --
+          </div>
+        </div>
+        <span id="rad-modal-status" class="status-badge" style="font-size: 9px; padding: 2px 6px; border-radius: 8px; background: var(--bg-surface); color: var(--warning);">
+          Modal Closed
+        </span>
+      </div>
+      <div id="rad-demographics-row" style="font-size: 10px; color: var(--text-dim); display: flex; gap: 8px;">
+        <span id="rad-age-gender">Age/Sex: --</span>
+        <span>•</span>
+        <span id="rad-cnic">CNIC: --</span>
+      </div>
+    </div>
+
+    <!-- CT Procedure Module Selection (22 Options) -->
+    <div class="card" style="padding: 10px; margin-bottom: 10px;">
+      <div class="card-label" style="font-size: 11px; margin-bottom: 6px;">🎯 Procedure Module</div>
+      <div class="field-group" style="margin-bottom: 0;">
+        <select id="rad-module-select" style="width: 100%; padding: 6px 8px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 11px; outline: none;">
+          <option value="">-- Select CT Module --</option>
+          <option value="803">CT BRAIN</option>
+          <option value="804">CT ORBIT</option>
+          <option value="805">CT ABDOMEN AND PELVIS</option>
+          <option value="806">CT CHEST</option>
+          <option value="807">CT KUB</option>
+          <option value="808">CT RENAL PROTOCOL</option>
+          <option value="809">CT NECK</option>
+          <option value="810">CT FACIAL BONES</option>
+          <option value="811">CT PNS</option>
+          <option value="812">CTPA</option>
+          <option value="813">HRCT CHEST</option>
+          <option value="814">CT ABDOMEN</option>
+          <option value="815">CT UPPER LIMB</option>
+          <option value="816">CT LOWER LIMB</option>
+          <option value="817">CT RENAL</option>
+          <option value="818">CT CERVICAL SPINE</option>
+          <option value="819">CT LUMBAR SPINE</option>
+          <option value="820">CT HRCT TEMPORAL BONE</option>
+          <option value="821">CT PELVIS</option>
+          <option value="822">CT FACE</option>
+          <option value="825">MLC CT SCAN 3D</option>
+        </select>
+        <div class="field-hint" style="font-size: 9px; margin-top: 3px;">
+          Automatically syncs to HMIS #changeModule selector.
+        </div>
+      </div>
+    </div>
+
+    <!-- Prior Pathology & Lab History -->
+    <div class="card" style="padding: 10px; margin-bottom: 10px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span class="card-label" style="font-size: 11px; margin-bottom: 0;">🔬 Prior Pathology & Labs</span>
+        <button id="rad-fetch-history-btn" class="feed-clear" style="border: 1px solid var(--border); padding: 2px 6px; font-size: 9px;">Fetch History</button>
+      </div>
+      <div id="rad-history-list" style="max-height: 90px; overflow-y: auto; font-size: 10px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px;">
+        <div style="text-align: center; padding: 8px; color: var(--text-dim);">No pathology records loaded. Click Fetch.</div>
+      </div>
+    </div>
+
+    <!-- Actions & Staging -->
+    <div class="card" style="padding: 10px; margin-bottom: 10px;">
+      <div class="card-label" style="font-size: 11px; margin-bottom: 8px;">⚡ Result Actions</div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 6px;">
+        <button id="rad-stage-btn" class="save-btn" style="padding: 6px; font-size: 10px; background: rgba(34, 211, 238, 0.15); border: 1px solid var(--accent); color: var(--accent);">
+          📝 Fill Rad Suite Report
+        </button>
+        <button id="rad-save-draft-btn" class="save-btn" style="padding: 6px; font-size: 10px; background: rgba(6, 182, 212, 0.2); border: 1px solid #0891b2; color: #22d3ee;">
+          💾 Save Draft
+        </button>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+        <button id="rad-submit-btn" class="save-btn" style="padding: 6px; font-size: 10px; background: rgba(34, 197, 94, 0.2); border: 1px solid var(--success); color: var(--success);">
+          🚀 Submit Final
+        </button>
+        <button id="rad-pacs-btn" class="save-btn" style="padding: 6px; font-size: 10px; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text);">
+          🖼️ PACS
+        </button>
+        <button id="rad-reject-btn" class="save-btn" style="padding: 6px; font-size: 10px; background: rgba(239, 68, 68, 0.15); border: 1px solid var(--danger); color: var(--danger);">
+          🛑 Reject
+        </button>
       </div>
     </div>
   </div>

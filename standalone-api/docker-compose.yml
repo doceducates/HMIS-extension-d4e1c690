@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  hmis-automation-worker:
+    build: .
+    container_name: hmis_automation_worker
+    restart: always
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - PORT=8080
+      - HEADLESS_MODE=true
+    volumes:
+      - ./audit-logs:/usr/src/app/audit-logs
+    shm_size: '1gb'

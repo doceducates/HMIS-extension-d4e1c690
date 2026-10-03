@@ -203,3 +203,182 @@ async function setupOffscreenDocument(path: string) {
     }
 }
 
+// ════════════════════════════════════════════════════════════════
+//  LOCAL WEBSOCKET GATEWAY CLIENT
+// ════════════════════════════════════════════════════════════════
+
+let gatewaySocket: WebSocket | null = null;
+const GATEWAY_URL = 'ws://localhost:8080?client=extension';
+let reconnectInterval: any = null;
+
+function connectToGateway() {
+    if (gatewaySocket && (gatewaySocket.readyState === WebSocket.OPEN || gatewaySocket.readyState === WebSocket.CONNECTING)) {
+        return;
+    }
+
+    console.log('🔗 [Extension] Connecting to HMIS local WebSocket Gateway...');
+    gatewaySocket = new WebSocket(GATEWAY_URL);
+
+    gatewaySocket.onopen = () => {
+        console.log('✅ [Extension] Connected to HMIS WebSocket Gateway.');
+        if (reconnectInterval) {
+            clearInterval(reconnectInterval);
+            reconnectInterval = null;
+        }
+    };
+
+    gatewaySocket.onmessage = async (event) => {
+        try {
+            const command = JSON.parse(event.data);
+            const { id, action, payload } = command;
+
+            console.log(`⚡ [Extension] Received command: ${action}`, payload);
+
+            // Execute the action and retrieve the result
+            const result = await handleGatewayAction(action, payload);
+
+            // Send response back via WebSocket
+            if (gatewaySocket && gatewaySocket.readyState === WebSocket.OPEN) {
+                gatewaySocket.send(JSON.stringify({
+                    id,
+                    ...result
+                }));
+            }
+        } catch (err: any) {
+            console.error('Error handling Gateway message:', err);
+        }
+    };
+
+    gatewaySocket.onclose = () => {
+        console.log('❌ [Extension] Gateway connection lost. Scheduling reconnect...');
+        gatewaySocket = null;
+        if (!reconnectInterval) {
+            reconnectInterval = setInterval(connectToGateway, 5000);
+        }
+    };
+
+    gatewaySocket.onerror = (err) => {
+        console.warn('Gateway connection error:', err);
+        gatewaySocket?.close();
+    };
+}
+
+/**
+ * Executes API actions by querying and messaging the active HMIS browser tab.
+ */
+async function handleGatewayAction(action: string, payload: any): Promise<{ data?: any; error?: string }> {
+    try {
+        const tabs = await chrome.tabs.query({ url: '*://hmis.punjab.gov.pk/*' });
+        if (tabs.length === 0) {
+            return { error: 'HMIS browser tab is not currently open or active.' };
+        }
+
+        const activeTabId = tabs[0].id;
+        if (!activeTabId) {
+            return { error: 'Could not obtain active HMIS tab ID.' };
+        }
+
+        switch (action) {
+            case 'START_AUTOPILOT':
+                await chrome.tabs.sendMessage(activeTabId, { action: 'RUN_WORKFLOW' });
+                return { data: { status: 'started' } };
+
+            case 'STOP_AUTOPILOT':
+                await chrome.tabs.sendMessage(activeTabId, { action: 'STOP_WORKFLOW' });
+                return { data: { status: 'stopped' } };
+
+            case 'GET_PATIENT_QUEUE': {
+                const response = await chrome.tabs.sendMessage(activeTabId, { action: 'GET_LIVE_QUEUE' });
+                return { data: response?.queue || [] };
+            }
+
+            case 'PROCESS_PATIENT': {
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: 'PROCESS_SPECIFIC_PATIENT',
+                    patientId: payload.patientId,
+                    mode: payload.mode || 'auto'
+                });
+                if (response?.success) {
+                    return { data: response };
+                } else {
+                    return { error: response?.error || 'Failed to trigger patient processing.' };
+                }
+            }
+
+            case 'SWITCH_USER_ROLE': {
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: 'SWITCH_USER_ROLE',
+                    roleId: payload.roleId
+                });
+                if (response?.success) {
+                    return { data: response };
+                } else {
+                    return { error: response?.error || 'Failed to trigger role switch.' };
+                }
+            }
+
+            case 'FILL_RADIOLOGY_REPORT': {
+                // Save staged report in session storage so it persists across tab navigations
+                await chrome.storage.session.set({ stagedRadiologyReport: payload });
+
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: 'FILL_RADIOLOGY_REPORT',
+                    payload
+                });
+
+                if (response?.success) {
+                    return { data: response };
+                } else {
+                    return { data: { status: 'staged', message: response?.message || 'Report staged in session storage.' } };
+                }
+            }
+
+            case 'GET_CURRENT_INVESTIGATION': {
+                const response = await chrome.tabs.sendMessage(activeTabId, { action: 'GET_CURRENT_INVESTIGATION' });
+                return { data: response?.data || null };
+            }
+
+            case 'GET_PATIENT_HISTORY': {
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: 'GET_PATIENT_HISTORY',
+                    investigationId: payload?.investigationId
+                });
+                return { data: response?.data || [] };
+            }
+
+            case 'SET_MODULE_ID': {
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: 'SET_MODULE_ID',
+                    moduleId: payload?.moduleId
+                });
+                return { data: response };
+            }
+
+            case 'SUBMIT_RADIOLOGY_RESULT': {
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: 'FILL_RADIOLOGY_REPORT',
+                    payload
+                });
+                return { data: response };
+            }
+
+            case 'EXECUTE_HMIS_ACTION': {
+                const response = await chrome.tabs.sendMessage(activeTabId, {
+                    action: payload.action,
+                    ...payload
+                });
+                return { data: response };
+            }
+
+            default:
+                return { error: `Unsupported gateway API action: ${action}` };
+        }
+    } catch (err: any) {
+        return { error: `Command execution failed: ${err.message}` };
+    }
+}
+
+// Start connection on service worker startup
+connectToGateway();
+
+
